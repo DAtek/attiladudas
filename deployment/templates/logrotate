@@ -1,0 +1,12 @@
+{{ log_path }} {
+    rotate {{ logrotate_preserve_amount }}
+    maxsize {{ max_log_size }}
+    notifempty
+    missingok
+    delaycompress
+    compress
+    sharedscripts
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}

@@ -1,0 +1,5 @@
+{% for item in environment %}
+{% for key, value in item.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+{% endfor %}

@@ -1,0 +1,9 @@
+.lh/
+.vscode/
+.idea/
+.env
+.dist/
+frontend/node_modules/
+deployment/inventories/
+tmp/
+backend/media

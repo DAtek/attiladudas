@@ -1,0 +1,45 @@
+name: CI Pipeline
+
+on:
+  push:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+      - name: Checkout LFS objects
+        run: git lfs checkout
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.19.0'
+      - uses: extractions/setup-just@v1
+
+      - name: Test
+        env:
+          EMPTY_POSTGRES_PORT: 5433
+          API_DB_HOST: 127.0.0.1
+          API_DB_PORT: 5432
+          API_DB_USER: user
+          API_DB_PASSWORD: password
+          API_DB_NAME: test
+        shell: bash
+        run: |
+          just run-integration-test-services -d
+          project_dir=$(pwd)
+          export API_MIGRATIONS_DIR=${project_dir}/backend/migrations
+          export TEST_FILES_DIR=${project_dir}/backend/components/gallery/test_files
+          just migrate up
+          status=0
+          just test-cover || status=$?
+          just stop-integration-test-services
+          exit $status
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          files: tmp/.coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
