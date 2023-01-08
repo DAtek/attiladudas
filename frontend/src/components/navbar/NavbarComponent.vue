@@ -22,9 +22,9 @@ function toggleMenu() {
         <div class="navbar-end">
           <div class="tabs is-centered">
             <ul>
-              <NavItem :path="'/'" :title="'About'" />
-              <NavItem :path="'/galleries/?page=1'" :title="'Galleries'" />
-              <NavItem :path="'/five-in-a-row/'" :title="'Five in a row'" />
+              <NavItem path="/" title="About" />
+              <NavItem path="/galleries/?page=1" active-path="/galleries" title="Galleries" />
+              <NavItem path="/five-in-a-row/" title="Five in a row" />
             </ul>
           </div>
         </div>

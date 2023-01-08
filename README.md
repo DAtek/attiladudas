@@ -6,6 +6,8 @@
 - `just`
 - `docker`
 - `direnv`
+- `go`
+- `node`
 
 ## Running the tests locally:
 - `just run-integration-test-services -d`

@@ -15,7 +15,7 @@ type moveMessageData struct {
 var move action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
 	room, ok := manager.roomsByConnection[conn]
 	if !ok || room.game == nil {
-		return messageStruct{Type: MessageTypeBadMessage, Data: "YOU_ARE_NAUGHTY"}
+		return messageStruct{Type: MessageTypeBadMessage, Data: "NO_ROOM"}
 	}
 
 	data, err := parseData(&moveMessageData{}, msg)

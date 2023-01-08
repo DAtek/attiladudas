@@ -1,6 +1,5 @@
 import {reactive} from "vue"
-import {getHeight, getWidth} from "./common"
-
+import {getHeight, getWidth} from "@/utils/common";
 
 class SquareStyle {
     public resize = () => {}
@@ -49,55 +48,9 @@ class SquareStyle {
     }
 }
 
-type Message = {
-    playerName: string
-    nextPlayer: string
-    winner: string
-    sender: string
-    text: string
-}
-
-const initialMessage: Message = {
-    playerName: "",
-    nextPlayer: "",
-    winner: "",
-    sender: "",
-    text: "",
-}
-
-class GameStore {
-    public squareStyle = new SquareStyle()
-    public tableSize = 11
-    public players = {}
-    public positions = {}
-    public message = {...initialMessage}
-
-    constructor() {
-        this.reset()
-    }
-
-    reset() {
-        this.players = {}
-        this.positions = {}
-        this.message = {...initialMessage}
-    }
-
-    get opponent(): string | null {
-        for (const player of Object.keys(this.players)) {
-            if (this.message.playerName !== player) return player
-        }
-
-        return null
-    }
-
-    loadMessageContent(message: Message) {
-        this.message = {...message}
-    }
-}
-
-export const gameStore = reactive(new GameStore())
+export const squareStyle = reactive(new SquareStyle())
 
 window.addEventListener("resize", () => {
-    gameStore.squareStyle.setResize()
-    gameStore.squareStyle.resize()
+    squareStyle.setResize()
+    squareStyle.resize()
 })

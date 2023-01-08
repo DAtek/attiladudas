@@ -53,7 +53,9 @@ func (r *room) getPlayerByConnection(conn ws.IConn) *player {
 			return p
 		}
 	}
-	return nil
+
+	// this should never happen, joinRoom() is responsible for storing the connections properly
+	panic("PLAYER_NOT_EXISTS_IN_ROOM")
 }
 
 func (r *room) createNewGame() {

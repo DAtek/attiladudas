@@ -51,4 +51,21 @@ func TestSendMessage(t *testing.T) {
 
 		wg.Wait()
 	})
+
+	t.Run("Senging message is forbidden without joining a room", func(t *testing.T) {
+		timeout := helpers.NewTimeout(100)
+		defer timeout.Finish()
+		conn := ws_mocks.NewMockChanConn()
+		manager := newRoomManager()
+
+		msg := &messageStruct{
+			Type: MessageTypeSendMessage,
+			Data: "Hi",
+		}
+
+		receivedMsg := sendMessage(manager, conn, msg)
+
+		assert.Equal(t, MessageTypeBadMessage, receivedMsg.Type)
+
+	})
 }

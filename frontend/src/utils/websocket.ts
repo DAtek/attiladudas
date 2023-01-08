@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-import {gameStore} from "./game_store"
 import {notificationCollection, NotificationItem} from "@/components/notification/notification";
 import type {FieldError} from "@/utils/api_client";
 
@@ -20,10 +18,6 @@ export class WebSocketClient {
         this._webSocket = new WebSocket(
             `${protocol}//${window.location.host}/ws/five-in-a-row/`
         )
-
-        this._webSocket.onclose = () => {
-            gameStore.reset();
-        }
 
         this._webSocket.onmessage = (ev) => this.handleMessage(ev)
         this._webSocket.onerror = (ev) => {

@@ -18,7 +18,7 @@ import (
 
 func TestGetGallery(t *testing.T) {
 	path := func(slug string) string {
-		return fmt.Sprintf("/api/gallery/%s/", slug)
+		return fmt.Sprintf("/api/galleries/%s/", slug)
 	}
 
 	t.Run("Returns gallery", func(t *testing.T) {

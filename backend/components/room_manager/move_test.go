@@ -4,6 +4,7 @@ import (
 	"attiladudas/backend/helpers"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -142,4 +143,73 @@ func TestMove(t *testing.T) {
 			assert.True(t, strings.Contains(errorMsg, "INVALID_POSITION"))
 		})
 	}
+
+	t.Run("Returns error if no room", func(t *testing.T) {
+		manager := newRoomManager()
+		conn1 := ws_mocks.NewMockChanConn()
+
+		data := &moveMessageData{Position: []int{5, 5}}
+		msg := &messageStruct{}
+		msg.setData(data, MessageTypeMove)
+
+		result := move(manager, conn1, msg)
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+		errorMsg := string(result.Data)
+		fmt.Printf("errorMsg: %v\n", errorMsg)
+		assert.True(t, strings.Contains(errorMsg, "NO_ROOM"))
+	})
+
+	t.Run("Returns error if data is invalid", func(t *testing.T) {
+		manager := newRoomManager()
+		conn1 := ws_mocks.NewMockChanConn()
+
+		player1 := &player{name: "a", conn: conn1}
+
+		manager.roomsByConnection[conn1] = &room{
+			players: []*player{player1},
+			game:    &fiar_mocks.MockGame{},
+		}
+
+		msg := &messageStruct{
+			Type: MessageTypeMove,
+			Data: "asdasd",
+		}
+
+		result := move(manager, conn1, msg)
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+	})
+
+	t.Run("Returns error core game return error", func(t *testing.T) {
+		manager := newRoomManager()
+		conn1 := ws_mocks.NewMockChanConn()
+
+		player1 := &player{name: "a", conn: conn1}
+
+		errorMessage := "UNEXPECTED_ERROR"
+		game := &fiar_mocks.MockGame{}
+		game.Move_ = func(playerName string, pos *fiar.Position) error {
+			return errors.New(errorMessage)
+		}
+		game.GetWinner_ = func() *string { return nil }
+		game.GetSquares_ = func() [][]fiar.Square {
+			row := []fiar.Square{0, 0, 0}
+			return [][]fiar.Square{row, row, row}
+		}
+
+		manager.roomsByConnection[conn1] = &room{
+			players: []*player{player1},
+			game:    game,
+		}
+
+		data := &moveMessageData{Position: []int{0, 0}}
+		msg := &messageStruct{}
+		msg.setData(data, MessageTypeMove)
+
+		result := move(manager, conn1, msg)
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+		assert.Equal(t, errorMessage, result.Data)
+	})
 }

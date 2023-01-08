@@ -126,4 +126,19 @@ func TestJoinRoom(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 	})
+
+	t.Run("Returns error if data is invalid", func(t *testing.T) {
+		manager := newRoomManager()
+		conn1 := ws_mocks.NewMockChanConn()
+
+		msg := &messageStruct{
+			Type: MessageTypeJoin,
+			Data: "",
+		}
+
+		result := joinRoom(manager, conn1, msg)
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+		assert.Equal(t, "INVALID_DATA", result.Data)
+	})
 }

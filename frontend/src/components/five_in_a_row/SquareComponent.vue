@@ -10,7 +10,7 @@
 
 import {computed} from "vue";
 import {fiveInARowState} from "@/views/five_in_a_row/state";
-import {gameStore} from "@/utils/game_store";
+import {squareStyle} from "@/components/five_in_a_row/dynamic_style";
 import {notificationCollection, NotificationItem} from "@/components/notification/notification";
 
 const EMPTY_VALUE = "A"
@@ -42,9 +42,9 @@ const divStyle = computed<string>(() => value.value === EMPTY_VALUE ? "opacity: 
 
 const buttonStyle = computed(() => {
   return [
-    `width: ${gameStore.squareStyle.squareSize}px`,
-    `height: ${gameStore.squareStyle.squareSize}px`,
-    `font-size: ${gameStore.squareStyle.fontSize}px`
+    `width: ${squareStyle.squareSize}px`,
+    `height: ${squareStyle.squareSize}px`,
+    `font-size: ${squareStyle.fontSize}px`
   ].join(';');
 })
 

@@ -31,7 +31,7 @@ export const router = createRouter({
       component: () => import("../views/LoginView.vue")
     },
       {
-      path: "/gallery/:slug/",
+      path: "/galleries/:slug/",
       name: routeNames.GALLERY,
       component: () => import("../views/gallery_view/GalleryView.vue")
     },

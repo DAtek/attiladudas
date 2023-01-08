@@ -223,4 +223,40 @@ func TestPickSide(t *testing.T) {
 		assert.True(t, strings.Contains(resultStr, "INVALID_SIDE"))
 	})
 
+	t.Run("Returns error if message data is invalid", func(t *testing.T) {
+		manager := newRoomManager()
+		conn := ws_mocks.NewMockChanConn()
+		manager.roomsByConnection[conn] = &room{
+			players: []*player{
+				{
+					name: "a",
+					conn: conn,
+				},
+				{
+					name: "c",
+				},
+			},
+		}
+
+		message := &messageStruct{Type: MessageTypePickSide, Data: ""}
+		result := pickSide(manager, conn, message)
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+		resultStr := string(result.Data)
+		fmt.Printf("resultStr: %v\n", resultStr)
+		assert.True(t, strings.Contains(resultStr, "INVALID_DATA"))
+	})
+
+	t.Run("Returns error if no room found", func(t *testing.T) {
+		manager := newRoomManager()
+		conn := ws_mocks.NewMockChanConn()
+
+		result := pickSide(manager, conn, &messageStruct{})
+
+		assert.Equal(t, MessageTypeBadMessage, result.Type)
+		resultStr := string(result.Data)
+		fmt.Printf("resultStr: %v\n", resultStr)
+		assert.True(t, strings.Contains(resultStr, "NO_ROOM"))
+	})
+
 }

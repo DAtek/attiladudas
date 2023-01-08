@@ -1,6 +1,6 @@
 <template>
   <h2 class="subtitle mt-6">
-    <a @click="redirectToGalleryDetail" :href="`/gallery/${gallery.slug}/`">
+    <a @click="redirectToGalleryDetail" :href="`/galleries/${gallery.slug}/`">
       {{ `${gallery.title} - ${formatGalleryDate(gallery.date)}` }}
     </a>
   </h2>

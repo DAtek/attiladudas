@@ -50,10 +50,10 @@
       import_tasks: ../tasks/configure_logging.yaml
 
   handlers:
-    # - name: restart rsyslog
-    #   systemd:
-    #     name: rsyslog.service
-    #     state: restarted
+    - name: restart rsyslog
+      systemd:
+        name: rsyslog.service
+        state: restarted
 
     - name: restart service
       systemd:

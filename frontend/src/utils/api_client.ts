@@ -106,7 +106,7 @@ class ApiClient {
             `/api/files/${fileId}/rank/${rank}/`,
             baseUrl(),
         )
-        this.getGalleryUrl = (slug: string) => new URL(`/api/gallery/${slug}/`, baseUrl())
+        this.getGalleryUrl = (slug: string) => new URL(`/api/galleries/${slug}/`, baseUrl())
         this._token = window.localStorage.getItem(KEY_TOKEN) || ""
     }
 

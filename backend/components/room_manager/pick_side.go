@@ -13,18 +13,18 @@ type pickSideData struct {
 }
 
 var pickSide action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
+	room, ok := manager.roomsByConnection[conn]
+
+	if !ok {
+		return messageStruct{Type: MessageTypeBadMessage, Data: "NO_ROOM"}
+	}
+
 	data, err := parseData(&pickSideData{}, msg)
 	if err != nil {
 		return messageStruct{
 			Type: MessageTypeBadMessage,
 			Data: *err,
 		}
-	}
-
-	room, ok := manager.roomsByConnection[conn]
-
-	if !ok {
-		return messageStruct{Type: MessageTypeBadMessage}
 	}
 
 	if err := golidator.Validate(data, room, conn); err != nil {

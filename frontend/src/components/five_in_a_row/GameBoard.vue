@@ -51,9 +51,11 @@ import {fiveInARowState} from "@/views/five_in_a_row/state";
 import type {WSError} from "@/utils/websocket";
 import {getErrorMessage, getErrorsForField} from "@/utils/errors";
 import {notificationCollection, NotificationItem} from "@/components/notification/notification";
-import {gameStore} from "@/utils/game_store";
+import {squareStyle} from "@/components/five_in_a_row/dynamic_style";
 import InputField from "@/components/InputField.vue";
 import SquaresComponent from "@/components/five_in_a_row/SquaresComponent.vue";
+
+const TABLE_SIZE = 11
 
 const sides = {
   X: "X",
@@ -111,7 +113,7 @@ function handleError(e: string) {
 }
 
 const messageColumnStyle = computed<string>(() => {
-  return `flex: none; width: ${gameStore.tableSize * (gameStore.squareStyle.squareSize + 1) + 2}px;`;
+  return `flex: none; width: ${TABLE_SIZE * (squareStyle.squareSize + 1) + 2}px;`;
 })
 
 function sendMessage(ev: Event) {

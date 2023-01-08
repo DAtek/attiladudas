@@ -39,7 +39,7 @@ func NewEngine(
 	}
 
 	engine.PATCH("/api/files/:id/rank/:rank/", requireUsername, handlerCollection.PatchFileRankHandler)
-	engine.GET("/api/gallery/:slug/", handlerCollection.GetGalleryHandler)
+	engine.GET("/api/galleries/:slug/", handlerCollection.GetGalleryHandler)
 	engine.POST("/api/gallery/", requireUsername, handlerCollection.PostGalleryHandler)
 	engine.GET("/api/galleries/", handlerCollection.GetGalleriesHandler)
 	engine.PUT("/api/galleries/:id/", requireUsername, handlerCollection.PutGalleryHandler)
