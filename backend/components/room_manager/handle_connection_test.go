@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
 	"attiladudas/backend/ws"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
@@ -9,6 +8,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/DAtek/gotils"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,8 +16,9 @@ import (
 func TestHandleConnection(t *testing.T) {
 	t.Run("Returns when message type is ws close", func(t *testing.T) {
 		conn := ws_mocks.NewMockChanConn()
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		roomManager := newRoomManager()
 		cleanupCalled := false
 		roomManager.cleanup_ = func(conn ws.IConn) {
@@ -43,8 +44,9 @@ func TestHandleConnection(t *testing.T) {
 
 	t.Run("Returns when reading message fails", func(t *testing.T) {
 		conn := ws_mocks.NewMockChanConn()
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		roomManager := newRoomManager()
 		roomManager.cleanup_ = func(conn ws.IConn) {}
 
@@ -70,8 +72,9 @@ func TestHandleConnection(t *testing.T) {
 
 	t.Run("Returns ok when handles action succesfully", func(t *testing.T) {
 		conn := ws_mocks.NewMockChanConn()
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		manager := newRoomManager()
 		manager.actions = actionCollection{
 			MessageTypeJoin: func(r *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
@@ -112,8 +115,9 @@ func TestHandleConnection(t *testing.T) {
 
 	t.Run("Returns error when validation fails", func(t *testing.T) {
 		conn := ws_mocks.NewMockChanConn()
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		manager := newRoomManager()
 		manager.cleanup_ = func(conn ws.IConn) {}
 

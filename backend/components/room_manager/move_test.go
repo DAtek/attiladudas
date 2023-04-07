@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"errors"
@@ -12,13 +11,15 @@ import (
 	fiar "attiladudas/backend/components/five_in_a_row"
 	fiar_mocks "attiladudas/backend/components/five_in_a_row/mocks"
 
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMove(t *testing.T) {
 	t.Run("IGame move is being called and game update is being sent to both players", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 
 		manager := newRoomManager()
 		conn1 := ws_mocks.NewMockChanConn()
@@ -51,7 +52,7 @@ func TestMove(t *testing.T) {
 		msg := &messageStruct{}
 		msg.setData(data, MessageTypeMove)
 
-		wg := helpers.NewWaitGroup()
+		wg := gotils.NewGoroGroup()
 		wg.Add(func() {
 			result := move(manager, conn1, msg)
 			assert.Equal(t, okMessage, result)
@@ -69,7 +70,7 @@ func TestMove(t *testing.T) {
 			assert.Equal(t, MessageTypeUpdateGame, msgStruct.Type)
 		})
 
-		wg.Wait()
+		wg.Run()
 	})
 
 	t.Run("Returns error if game ended", func(t *testing.T) {

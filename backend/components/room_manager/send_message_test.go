@@ -1,18 +1,19 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"testing"
 
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSendMessage(t *testing.T) {
 	t.Run("Other player receives message", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 
 		manager := newRoomManager()
 		player1 := &player{
@@ -36,7 +37,7 @@ func TestSendMessage(t *testing.T) {
 			Data: "Hi",
 		}
 
-		wg := helpers.NewWaitGroup()
+		wg := gotils.NewGoroGroup()
 
 		wg.Add(func() {
 			sendMessage(manager, player1.conn, msg)
@@ -49,12 +50,13 @@ func TestSendMessage(t *testing.T) {
 			assert.Equal(t, msg, msgStruct)
 		})
 
-		wg.Wait()
+		wg.Run()
 	})
 
 	t.Run("Senging message is forbidden without joining a room", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		conn := ws_mocks.NewMockChanConn()
 		manager := newRoomManager()
 

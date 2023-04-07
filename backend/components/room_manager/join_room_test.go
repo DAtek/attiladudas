@@ -1,12 +1,11 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
-	"testing"
-
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestJoinRoom(t *testing.T) {
@@ -45,8 +44,9 @@ func TestJoinRoom(t *testing.T) {
 	})
 
 	t.Run("Player1 receives message when player2 joins", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 		manager := newRoomManager()
 		roomName := "room1"
 		conn := ws_mocks.NewMockChanConn()
@@ -69,14 +69,14 @@ func TestJoinRoom(t *testing.T) {
 		message := &messageStruct{}
 		message.setData(request, MessageTypeJoin)
 
-		wg := helpers.NewWaitGroup()
+		group := gotils.NewGoroGroup()
 
-		wg.Add(func() {
+		group.Add(func() {
 			result := joinRoom(manager, nil, message)
 			assert.Equal(t, okMessage, result)
 		})
 
-		wg.Add(func() {
+		group.Add(func() {
 			receivedMessage := <-conn.WriteChan
 			msgStruct := &messageStruct{}
 			json.Unmarshal(receivedMessage.Data, msgStruct)
@@ -86,7 +86,7 @@ func TestJoinRoom(t *testing.T) {
 			assert.Equal(t, request, data)
 		})
 
-		wg.Wait()
+		group.Run()
 	})
 
 	t.Run("Returns error message when room is full", func(t *testing.T) {

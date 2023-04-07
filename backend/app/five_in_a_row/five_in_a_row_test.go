@@ -1,7 +1,6 @@
 package app_fiar
 
 import (
-	"attiladudas/backend/helpers"
 	"attiladudas/backend/ws"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"bytes"
@@ -10,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,8 +38,9 @@ func TestFiveInARow(t *testing.T) {
 	t.Run("Room manager is handling the WS connection", func(t *testing.T) {
 		app := newMockApp()
 		conn := ws_mocks.NewMockChanConn()
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(10000)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 
 		roomManagerWasCalled := false
 

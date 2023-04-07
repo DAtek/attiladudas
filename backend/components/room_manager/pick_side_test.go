@@ -1,20 +1,21 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
 	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPickSide(t *testing.T) {
 	t.Run("Choosen side is stored properly", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 
 		manager := newRoomManager()
 		playerName := "player1"
@@ -33,7 +34,7 @@ func TestPickSide(t *testing.T) {
 		}
 		message := &messageStruct{}
 		message.setData(data, MessageTypePickSide)
-		wg := helpers.NewWaitGroup()
+		wg := gotils.NewGoroGroup()
 
 		wg.Add(func() {
 			result := pickSide(manager, p.conn, message)
@@ -45,13 +46,14 @@ func TestPickSide(t *testing.T) {
 			<-conn2.WriteChan
 		})
 
-		wg.Wait()
+		wg.Run()
 
 	})
 
 	t.Run("Other player gets notified", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		go func() { panic(<-timeout.ErrorCh) }()
+		defer timeout.Cancel()
 
 		manager := newRoomManager()
 		playerName := "player1"
@@ -72,7 +74,7 @@ func TestPickSide(t *testing.T) {
 		message := &messageStruct{}
 		message.setData(request, MessageTypePickSide)
 
-		wg := helpers.NewWaitGroup()
+		wg := gotils.NewGoroGroup()
 
 		wg.Add(func() {
 			result := pickSide(manager, conn1, message)
@@ -89,12 +91,12 @@ func TestPickSide(t *testing.T) {
 			assert.Equal(t, request, data)
 		})
 
-		wg.Wait()
+		wg.Run()
 	})
 
 	t.Run("Game is being created when both players picked side", func(t *testing.T) {
-		timeout := helpers.NewTimeout(100)
-		defer timeout.Finish()
+		timeout := gotils.NewTimeoutMs(100)
+		defer timeout.Cancel()
 
 		manager := newRoomManager()
 		playerName := "player1"
@@ -116,7 +118,7 @@ func TestPickSide(t *testing.T) {
 		message := &messageStruct{}
 		message.setData(request, MessageTypePickSide)
 
-		wg := helpers.NewWaitGroup()
+		wg := gotils.NewGoroGroup()
 
 		wg.Add(func() {
 			result := pickSide(manager, conn1, message)
@@ -136,7 +138,7 @@ func TestPickSide(t *testing.T) {
 			<-conn2.WriteChan
 		})
 
-		wg.Wait()
+		wg.Run()
 
 		assert.Equal(t, playerName, room.game.CurrentPlayer())
 	})

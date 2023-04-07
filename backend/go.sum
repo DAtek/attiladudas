@@ -79,6 +79,8 @@ github.com/DAtek/golidator v0.1.2 h1:G9EXU3Q2M1wUB3lQ+ThwNDZxEVuQQ8PgsxQ5zr6vVvA
 github.com/DAtek/golidator v0.1.2/go.mod h1:pbyaa0PtKaEnOyddHIZdlCEhYPRNrnTslICgA59OLzM=
 github.com/DAtek/gopaq v0.1.0 h1:iru6ZiVBwMbZuPuUQYZ6ABODQHCxkk13i/YNBAJBwYs=
 github.com/DAtek/gopaq v0.1.0/go.mod h1:YW89dve8sCmwlOCco908nWJd+ztt6+HqGCWub1lOOfc=
+github.com/DAtek/gotils v0.1.0 h1:w4UTuzAWAtfGaFfehYl4hAm0E88f4iclVY8z9KEu+no=
+github.com/DAtek/gotils v0.1.0/go.mod h1:P3X0hncghmh6WaxNQFSturLwCG5IwOK13xTnAIYbet4=
 github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030IGemrRc=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/Microsoft/go-winio v0.4.11/go.mod h1:VhR8bwka0BXejwEJY73c50VrPtXAaKcyvVC4A4RozmA=
@@ -1103,8 +1105,9 @@ github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
-github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
+github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
+github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/syndtr/gocapability v0.0.0-20170704070218-db04d3cc01c8/go.mod h1:hkRG7XYTFWNJGYcbNJQlaLq0fg1yr4J4t/NcTQtrfww=
 github.com/syndtr/gocapability v0.0.0-20180916011248-d98352740cb2/go.mod h1:hkRG7XYTFWNJGYcbNJQlaLq0fg1yr4J4t/NcTQtrfww=

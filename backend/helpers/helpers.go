@@ -27,27 +27,3 @@ func DateFromISO8601Panic(isoDateStr string) *datatypes.Date {
 	}
 	return date
 }
-
-type Timeout struct {
-	finished bool
-}
-
-func (t *Timeout) run(sleepMilliseconds uint) {
-	go func() {
-		time.Sleep(time.Millisecond * time.Duration(sleepMilliseconds))
-		if t.finished {
-			return
-		}
-		panic("TIMEOUT_ERROR")
-	}()
-}
-
-func (t *Timeout) Finish() {
-	t.finished = true
-}
-
-func NewTimeout(sleepMilliseconds uint) *Timeout {
-	t := &Timeout{}
-	t.run(sleepMilliseconds)
-	return t
-}
