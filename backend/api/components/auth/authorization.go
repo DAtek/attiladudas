@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"attiladudas/backend/components"
+	"api/components"
 	"strings"
 )
 

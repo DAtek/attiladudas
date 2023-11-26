@@ -1,0 +1,22 @@
+pgks := "./api/handlers/*"
+coverfile := ".coverage"
+
+
+run-integration-services *args:
+    docker compose up {{ args }}
+
+
+migrate *args:
+    go run ./db/cmd/migrate {{ args }}
+
+
+test *args:
+    gotestsum -f dots-v2 -- {{ args }} {{ pgks }}
+
+
+test-cover *args:
+    gotestsum -f dots-v2 -- {{ args }} -coverprofile {{ coverfile }} {{ pgks }}
+
+
+show-coverage:
+    go tool cover -html {{ coverfile }}

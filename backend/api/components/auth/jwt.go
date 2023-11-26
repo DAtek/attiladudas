@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"attiladudas/backend/components"
+	"api/components"
 	"crypto"
 
 	"github.com/golang-jwt/jwt/v4"
