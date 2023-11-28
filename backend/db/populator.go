@@ -42,7 +42,7 @@ func (p *Populator) Gallery(data ...map[string]any) *models.Gallery {
 
 	obj := &models.Gallery{
 		Title:       faker.Lorem().Word(),
-		Slug:        faker.Lorem().Word(),
+		Slug:        faker.Bothify("??????????????"),
 		Description: faker.Lorem().Sentence(5),
 		Date:        &d,
 		Directory:   faker.Bothify("??????????????"),
