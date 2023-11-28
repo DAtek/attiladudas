@@ -1,4 +1,10 @@
-pgks := "./api/handlers/*"
+pgks := "\
+./api/components/auth \
+./api/components/five_in_a_row \
+./api/components/gallery \
+./api/handlers/file_rank_patch \
+./api/handlers/token_post
+"
 coverfile := ".coverage"
 
 
@@ -20,3 +26,30 @@ test-cover *args:
 
 show-coverage:
     go tool cover -html {{ coverfile }}
+
+
+tidy:
+    #!/bin/bash
+
+    rm -f go.work.sum
+
+    for module in api fiber-tools db
+    do
+        just tidy-module ${module} &
+    done
+
+    while true; do
+        wait -n
+        [ "$?" = "127" ] && break
+    done
+
+    go work sync
+
+
+tidy-module module:
+    #!/bin/bash
+    echo "Tidying {{ module }}"
+    cd {{ module }}
+    go mod tidy
+
+

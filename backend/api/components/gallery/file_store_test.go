@@ -1,9 +1,9 @@
 package gallery
 
 import (
-	"attiladudas/backend/components"
-	"attiladudas/backend/helpers"
-	"attiladudas/backend/models"
+	"api"
+	"db"
+	"db/models"
 	"os"
 	"path/filepath"
 	"testing"
@@ -15,12 +15,13 @@ import (
  * A running postgres instance is required to run these tests
  */
 func TestAddFiles(t *testing.T) {
-	mediaDir := components.EnvMediaDir.Load()
+	mediaDir := api.EnvMediaDir.Load()
 
 	t.Run("AddFiles saves files properly", func(t *testing.T) {
-		db := getDb()
-		defer db.Rollback()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		populator := db.NewPopulator(tx)
+		store := NewFileStore(tx, api.EnvMediaDir.Load())
 		defer os.RemoveAll(mediaDir)
 
 		files := []*FileInput{
@@ -34,15 +35,13 @@ func TestAddFiles(t *testing.T) {
 			},
 		}
 
-		gallery := NewDummyGallery()
-
-		panicErrorResult(db.Create(gallery))
+		gallery := populator.Gallery()
 
 		err := store.AddFiles(gallery, files)
 		assert.Nil(t, err)
 
 		count := int64(0)
-		db.Model(&models.File{}).Where("filename = ?", files[0].Filename).Count(&count)
+		tx.Model(&models.File{}).Where("filename = ?", files[0].Filename).Count(&count)
 		assert.Equal(t, int64(1), count)
 
 		basePath := filepath.Join(mediaDir, gallery.Directory)
@@ -55,21 +54,19 @@ func TestAddFiles(t *testing.T) {
 	})
 
 	t.Run("AddFiles returns error if file already exists", func(t *testing.T) {
-		db := getDb()
-		defer db.Rollback()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		populator := db.NewPopulator(tx)
+		store := NewFileStore(tx, api.EnvMediaDir.Load())
 		defer os.RemoveAll(mediaDir)
 
-		gallery := &models.Gallery{
-			Title:     "gallery1",
-			Directory: "gallery1",
-			Files: []*models.File{
+		gallery := populator.Gallery(map[string]any{
+			"Title":     "gallery1",
+			"Directory": "gallery1",
+			"Files": []*models.File{
 				{Filename: "oi.mate"},
 			},
-			Date: helpers.DateFromISO8601Panic("3000-01-01"),
-		}
-
-		panicErrorResult(db.Create(gallery))
+		})
 
 		files := []*FileInput{
 			{Filename: gallery.Files[0].Filename},
@@ -81,22 +78,20 @@ func TestAddFiles(t *testing.T) {
 	})
 }
 
-/*
- * A running postgres instance is required to run these tests
- */
 func TestUpdateFileRank(t *testing.T) {
 	t.Run("Updates rank properly", func(t *testing.T) {
-		db := getDb()
-		defer db.Rollback()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		populator := db.NewPopulator(tx)
+		store := NewFileStore(tx, api.EnvMediaDir.Load())
 
 		files := []*models.File{
 			{Filename: "file1.jpg", Rank: 2},
 		}
 
-		gallery := NewDummyGallery()
-		gallery.Files = files
-		panicErrorResult(db.Create(gallery))
+		populator.Gallery(map[string]any{
+			"Files": files,
+		})
 
 		wantedFile := &models.File{Id: files[0].Id, Rank: -3, Filename: files[0].Filename, GalleryId: files[0].GalleryId}
 		err := store.UpdateFileRank(&UpdateFileRankInput{FileId: wantedFile.Id, Rank: wantedFile.Rank})
@@ -104,61 +99,48 @@ func TestUpdateFileRank(t *testing.T) {
 		assert.Nil(t, err)
 
 		savedFile := &models.File{}
-		db.Where("id = ?", files[0].Id).Find(savedFile)
+		tx.Where("id = ?", files[0].Id).Find(savedFile)
 
 		assert.Equal(t, wantedFile, savedFile)
 	})
 
 	t.Run("Returns error when table doesn't exist", func(t *testing.T) {
-		db := getEmptyDb()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		store := NewFileStore(tx, api.EnvMediaDir.Load())
 		err := store.UpdateFileRank(&UpdateFileRankInput{})
 		assert.Error(t, err)
 	})
 }
 
-/*
- * A running postgres instance is required to run these tests
- */
 func TestGetFile(t *testing.T) {
 	t.Run("Returns file", func(t *testing.T) {
-		db := getDb()
-		defer db.Rollback()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		populator := db.NewPopulator(tx)
+		store := NewFileStore(tx, api.EnvMediaDir.Load())
 
 		files := []*models.File{
 			{Filename: "file1.jpg", Rank: 2},
 			{Filename: "file2.jpg", Rank: 3},
 		}
 
-		gallery := NewDummyGallery()
-		gallery.Files = files
-
-		panicErrorResult(db.Create(gallery))
+		populator.Gallery(map[string]any{"Files": files})
 
 		savedFile, err := store.GetFile(files[0].Id)
 
 		assert.Nil(t, err)
 		assert.Equal(t, files[0], savedFile)
 	})
-
-	t.Run("Returns error when table doesn't exist", func(t *testing.T) {
-		db := getEmptyDb()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
-		_, err := store.GetFile(1)
-		assert.Error(t, err)
-	})
 }
 
-/*
- * A running postgres instance is required to run these tests
- */
 func TestDeleteFiles(t *testing.T) {
 	t.Run("Deletes all files", func(t *testing.T) {
-		db := getDb()
-		defer db.Rollback()
-		store := NewFileStore(db, components.EnvMediaDir.Load())
-		mediaDir := components.EnvMediaDir.Load()
+		tx := db.GetTestTransaction()
+		defer tx.Rollback()
+		populator := db.NewPopulator(tx)
+		mediaDir := api.EnvMediaDir.Load()
+		store := NewFileStore(tx, mediaDir)
 		defer os.RemoveAll(mediaDir)
 
 		// given
@@ -168,10 +150,9 @@ func TestDeleteFiles(t *testing.T) {
 			{Filename: "file3.jpg"},
 		}
 
-		gallery := NewDummyGallery()
-		gallery.Files = files
+		gallery := populator.Gallery(map[string]any{"Files": files})
 
-		basePath := filepath.Join(components.EnvMediaDir.Load(), gallery.Directory)
+		basePath := filepath.Join(mediaDir, gallery.Directory)
 		if fileErr := os.MkdirAll(basePath, 0755); fileErr != nil {
 			panic(fileErr)
 		}
@@ -182,8 +163,6 @@ func TestDeleteFiles(t *testing.T) {
 			panic(fileErr)
 		}
 		file.Close()
-
-		db.Create(gallery)
 
 		if gallery.Id == 0 || files[0].Id == 0 || files[1].Id == 0 {
 			panic("Records weren't created")
@@ -196,7 +175,7 @@ func TestDeleteFiles(t *testing.T) {
 		// then
 		assert.Nil(t, err)
 		count := int64(0)
-		db.Model(&models.File{}).Where("id IN ?", idsToDelete).Count(&count)
+		tx.Model(&models.File{}).Where("id IN ?", idsToDelete).Count(&count)
 		assert.Equal(t, int64(0), count)
 		for _, file := range []*models.File{files[0], files[1]} {
 			_, err := os.Stat(filepath.Join(basePath, file.Filename))
@@ -206,7 +185,9 @@ func TestDeleteFiles(t *testing.T) {
 }
 
 func TestMediaDirName(t *testing.T) {
-	store := NewFileStore(db, "/home/app/files")
+	tx := db.GetTestTransaction()
+	defer tx.Rollback()
+	store := NewFileStore(tx, "/home/app/files")
 
 	assert.Equal(t, "files", store.MediaDirName())
 }

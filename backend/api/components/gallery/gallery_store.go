@@ -1,8 +1,7 @@
 package gallery
 
 import (
-	"attiladudas/backend/components"
-	"attiladudas/backend/models"
+	"db/models"
 	"errors"
 	"os"
 	"path/filepath"
@@ -11,6 +10,16 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
+)
+
+type GalleryError string
+
+func (e GalleryError) Error() string {
+	return string(e)
+}
+
+const (
+	ErrorNotExisits = GalleryError("NOT_EXISTS")
 )
 
 type CreateUpdateGalleryInput struct {
@@ -82,7 +91,7 @@ func (store *galleryStore) GetGallery(input *GetGalleryInput) (*models.Gallery, 
 	}
 
 	if result.RowsAffected == 0 {
-		return nil, components.NotFoundError
+		return nil, ErrorNotExisits
 	}
 
 	return gallery, nil
@@ -149,7 +158,7 @@ func (store *galleryStore) DeleteGallery(gallery *models.Gallery) error {
 	}
 
 	if result.RowsAffected == 0 {
-		return components.NotFoundError
+		return ErrorNotExisits
 	}
 
 	dir := filepath.Join(store.baseDir, gallery.Directory)

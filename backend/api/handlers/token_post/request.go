@@ -1,7 +1,7 @@
 package token_post
 
 import (
-	"api/components"
+	"api"
 	"db"
 	"db/models"
 	"encoding/base64"
@@ -24,13 +24,13 @@ func (p *postTokenBody) GetValidators(params ...any) golidator.ValidatorCollecti
 	return golidator.ValidatorCollection{
 		{Field: "username", Function: func() *golidator.ValueError {
 			if p.Username == "" {
-				return components.ErrorRequired
+				return api.ErrorRequired
 			}
 			return nil
 		}},
 		{Field: "password", Function: func() *golidator.ValueError {
 			if p.Password == "" {
-				return components.ErrorRequired
+				return api.ErrorRequired
 			}
 			return nil
 		}},
@@ -44,7 +44,7 @@ func (p *postTokenBody) GetValidators(params ...any) golidator.ValidatorCollecti
 				session.Where("username = ?", p.Username).Find(p.user),
 			)
 			if res.RowsAffected == 0 {
-				return components.ErrorWrongCredentials
+				return api.ErrorWrongCredentials
 			}
 
 			decoded, unexpectedErr := base64.StdEncoding.DecodeString(p.user.PasswordHash)
@@ -56,7 +56,7 @@ func (p *postTokenBody) GetValidators(params ...any) golidator.ValidatorCollecti
 			cryptErr := bcrypt.CompareHashAndPassword(decoded, []byte(p.Password))
 
 			if cryptErr != nil {
-				return components.ErrorWrongCredentials
+				return api.ErrorWrongCredentials
 			}
 
 			return nil

@@ -1,20 +1,35 @@
 package auth
 
 import (
-	"api/components"
 	"strings"
 )
 
-const InvalidAuthHeaderError = components.ApiError("INVALID OR MISSING AUTHORIZATION HEADER")
-const MissingUsernameError = components.ApiError("MISSING USERNAME IN JWT")
+type AuthError string
 
-type AuthContext struct{}
-
-type IAuthorization interface {
-	RequireUsername(authHeader string, jwtCtx IJwt) error
+func (e AuthError) Error() string {
+	return string(e)
 }
 
-func (a *AuthContext) RequireUsername(authHeader string, jwtCtx IJwt) error {
+const (
+	InvalidAuthHeaderError = AuthError("INVALID OR MISSING AUTHORIZATION HEADER")
+	MissingUsernameError   = AuthError("MISSING USERNAME IN JWT")
+)
+
+type authContext struct {
+	jtwCtx IJwt
+}
+
+type IAuthorization interface {
+	RequireUsername(authHeader string) error
+}
+
+func NewAuthContext(jwtCtx IJwt) IAuthorization {
+	return &authContext{
+		jtwCtx: jwtCtx,
+	}
+}
+
+func (a *authContext) RequireUsername(authHeader string) error {
 	parts := strings.Split(authHeader, "Bearer ")
 
 	if len(parts) != 2 {
@@ -22,7 +37,7 @@ func (a *AuthContext) RequireUsername(authHeader string, jwtCtx IJwt) error {
 	}
 
 	token := parts[1]
-	claims, err := jwtCtx.Decode(token)
+	claims, err := a.jtwCtx.Decode(token)
 
 	if err != nil {
 		return err

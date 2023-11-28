@@ -1,14 +1,22 @@
 package auth
 
-type MockJwt struct {
-	Encode_ func(*Claims) (string, error)
+type MockAuthContext struct {
+	RequireUsername_ func(authHeader string) error
+}
+
+func (a *MockAuthContext) RequireUsername(authHeader string) error {
+	return a.RequireUsername_(authHeader)
+}
+
+type MockJwtContext struct {
 	Decode_ func(string) (*Claims, error)
+	Encode_ func(*Claims) (string, error)
 }
 
-func (m *MockJwt) Encode(c *Claims) (string, error) {
-	return m.Encode_(c)
+func (c *MockJwtContext) Decode(s string) (*Claims, error) {
+	return c.Decode_(s)
 }
 
-func (m *MockJwt) Decode(s string) (*Claims, error) {
-	return m.Decode_(s)
+func (c *MockJwtContext) Encode(claims *Claims) (string, error) {
+	return c.Encode_(claims)
 }

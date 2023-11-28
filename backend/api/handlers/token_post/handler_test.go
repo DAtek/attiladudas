@@ -28,7 +28,7 @@ func TestPostToken(t *testing.T) {
 		populator := db.NewPopulator(transaction)
 		populator.User(map[string]any{"Username": username, "PasswordHash": hashedPassword})
 
-		jwtContext := &auth.MockJwt{
+		jwtContext := &auth.MockJwtContext{
 			Encode_: func(c *auth.Claims) (string, error) {
 				return "LOL", nil
 			},
@@ -83,7 +83,7 @@ func TestPostToken(t *testing.T) {
 			populator := db.NewPopulator(transaction)
 			populator.User(map[string]any{"Username": username, "PasswordHash": hashedPassword})
 			app := fibertools.NewApp(
-				PluginTokenPost(transaction, &auth.MockJwt{}),
+				PluginTokenPost(transaction, &auth.MockJwtContext{}),
 			)
 			body, _ := json.Marshal(postTokenBody{Username: scenario.username, Password: scenario.password})
 
@@ -107,7 +107,7 @@ func TestPostToken(t *testing.T) {
 		defer transaction.Rollback()
 
 		app := fibertools.NewApp(
-			PluginTokenPost(transaction, &auth.MockJwt{}),
+			PluginTokenPost(transaction, &auth.MockJwtContext{}),
 		)
 
 		body := gotils.ResultOrPanic(

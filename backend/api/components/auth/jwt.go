@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"api/components"
 	"crypto"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -12,7 +11,11 @@ type Claims struct {
 	Username string `json:"username"`
 }
 
-type JWTError components.ApiError
+type JWTError string
+
+func (e JWTError) Error() string {
+	return string(e)
+}
 
 const InvalidClaimsError = JWTError("INVALID CLAIMS")
 
@@ -64,8 +67,4 @@ func (claims Claims) Valid() error {
 	}
 
 	return nil
-}
-
-func (err JWTError) Error() string {
-	return string(err)
 }

@@ -7,9 +7,11 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -28,6 +30,22 @@ func (p *Populator) User(data ...map[string]any) *models.User {
 	obj := &models.User{
 		Username:     faker.Internet().User(),
 		PasswordHash: faker.Internet().Password(),
+	}
+
+	return createWithCustomValues(p.transaction, obj, data...)
+}
+
+func (p *Populator) Gallery(data ...map[string]any) *models.Gallery {
+	faker := newFaker()
+	t := time.Now().UTC()
+	d := datatypes.Date(t)
+
+	obj := &models.Gallery{
+		Title:       faker.Lorem().Word(),
+		Slug:        faker.Lorem().Word(),
+		Description: faker.Lorem().Sentence(5),
+		Date:        &d,
+		Directory:   faker.Bothify("??????????????"),
 	}
 
 	return createWithCustomValues(p.transaction, obj, data...)

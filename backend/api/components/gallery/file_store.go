@@ -1,7 +1,7 @@
 package gallery
 
 import (
-	"attiladudas/backend/models"
+	"db/models"
 	"os"
 	"path/filepath"
 	"strings"

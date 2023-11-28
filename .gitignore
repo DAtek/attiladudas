@@ -3,8 +3,8 @@
 .idea/
 .env
 .dist/
+.tmp/
 frontend/node_modules/
 deployment/inventories/
-tmp/
 backend/media
 .coverage
