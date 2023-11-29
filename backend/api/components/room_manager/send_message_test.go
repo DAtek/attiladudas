@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"testing"
 
@@ -17,10 +16,10 @@ func TestSendMessage(t *testing.T) {
 
 		manager := newRoomManager()
 		player1 := &player{
-			conn: ws_mocks.NewMockChanConn(),
+			conn: NewMockChanConn(),
 		}
 
-		conn2 := ws_mocks.NewMockChanConn()
+		conn2 := NewMockChanConn()
 		player2 := &player{
 			conn: conn2,
 		}
@@ -57,7 +56,7 @@ func TestSendMessage(t *testing.T) {
 		timeout := gotils.NewTimeoutMs(100)
 		go func() { panic(<-timeout.ErrorCh) }()
 		defer timeout.Cancel()
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 		manager := newRoomManager()
 
 		msg := &messageStruct{

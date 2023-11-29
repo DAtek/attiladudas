@@ -1,13 +1,12 @@
 package room_manager
 
 import (
-	"attiladudas/backend/ws"
 	"encoding/json"
 
 	"github.com/gorilla/websocket"
 )
 
-var sendMessage action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
+func sendMessage(manager *roomManager, conn IWSConn, msg *messageStruct) messageStruct {
 	room, ok := manager.roomsByConnection[conn]
 	if !ok {
 		return messageStruct{Type: MessageTypeBadMessage, Data: "PLAYER_DID_NOT_JOIN_ANY_ROOM"}

@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	"attiladudas/backend/ws"
 	"encoding/json"
 	"log"
 
@@ -9,7 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func (manager *roomManager) HandleConnection(conn ws.IConn) {
+func (manager *roomManager) HandleConnection(conn IWSConn) {
 	defer func() {
 		manager.cleanup_(conn)
 		log.Println("Connection closed")

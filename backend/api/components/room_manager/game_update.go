@@ -1,7 +1,7 @@
 package room_manager
 
 import (
-	fiar "attiladudas/backend/components/five_in_a_row"
+	fiar "api/components/five_in_a_row"
 	"encoding/json"
 	"fmt"
 	"strings"

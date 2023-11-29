@@ -1,10 +1,8 @@
 package room_manager
 
 import (
-	fiar "attiladudas/backend/components/five_in_a_row"
-	"attiladudas/backend/ws"
-
-	"github.com/gorilla/websocket"
+	fiar "api/components/five_in_a_row"
+	"github.com/gofiber/contrib/websocket"
 )
 
 type room struct {
@@ -16,7 +14,7 @@ type room struct {
 type player struct {
 	name string
 	side playerSide
-	conn ws.IConn
+	conn IWSConn
 }
 
 type playerSide string
@@ -47,7 +45,7 @@ func (r *room) getOtherPlayer(name string) *player {
 	return r.players[0]
 }
 
-func (r *room) getPlayerByConnection(conn ws.IConn) *player {
+func (r *room) getPlayerByConnection(conn IWSConn) *player {
 	for _, p := range r.players {
 		if conn == p.conn {
 			return p

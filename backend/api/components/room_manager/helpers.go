@@ -1,14 +1,13 @@
 package room_manager
 
 import (
-	"attiladudas/backend/helpers"
-	"attiladudas/backend/ws"
 	"encoding/json"
+	"fibertools"
 
 	"github.com/DAtek/golidator"
 )
 
-func handleBadMessage(conn ws.IConn, validationError *golidator.ValidationError, messageType int) bool {
+func handleBadMessage(conn IWSConn, validationError *golidator.ValidationError, messageType int) bool {
 	if validationError == nil {
 		return false
 	}
@@ -20,7 +19,7 @@ func handleBadMessage(conn ws.IConn, validationError *golidator.ValidationError,
 }
 
 func createBadMessageFromValidationError(validationError *golidator.ValidationError) messageStruct {
-	jsonError := helpers.JsonErrorFromValidationError(validationError)
+	jsonError := fibertools.JsonErrorFromValidationError(validationError)
 	errData, _ := json.Marshal(jsonError)
 	errStr := string(errData)
 	return messageStruct{Type: MessageTypeBadMessage, Data: errStr}

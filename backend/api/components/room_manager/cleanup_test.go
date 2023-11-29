@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	ws_mocks "attiladudas/backend/ws/mocks"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,7 +10,7 @@ func TestCleanup(t *testing.T) {
 	t.Run("Deletes room when last player exits", func(t *testing.T) {
 		manager := newRoomManager()
 		roomName := "room1"
-		conn := &ws_mocks.MockChanConn{}
+		conn := &MockChanConn{}
 		room := &room{
 			name: roomName,
 			players: []*player{
@@ -34,8 +33,8 @@ func TestCleanup(t *testing.T) {
 	t.Run("Removes leaving player from room", func(t *testing.T) {
 		manager := newRoomManager()
 		roomName := "room1"
-		conn1 := &ws_mocks.MockChanConn{}
-		conn2 := &ws_mocks.MockChanConn{}
+		conn1 := &MockChanConn{}
+		conn2 := &MockChanConn{}
 		room := &room{
 			name: roomName,
 			players: []*player{
@@ -62,7 +61,7 @@ func TestCleanup(t *testing.T) {
 
 	t.Run("Does nothing when no room found", func(t *testing.T) {
 		manager := newRoomManager()
-		conn := &ws_mocks.MockChanConn{}
+		conn := &MockChanConn{}
 
 		manager.cleanup(conn)
 	})

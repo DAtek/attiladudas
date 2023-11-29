@@ -1,4 +1,4 @@
-package ws_mocks
+package room_manager
 
 type MockChanConn struct {
 	ReadChan  chan MockMessage
@@ -13,12 +13,12 @@ type MockMessage struct {
 
 func NewMockChanConn() *MockChanConn {
 	return &MockChanConn{
-		ReadChan:  make(chan MockMessage),
-		WriteChan: make(chan MockMessage),
+		ReadChan:  make(chan MockMessage, 1),
+		WriteChan: make(chan MockMessage, 1),
 	}
 }
 
-func (m *MockChanConn) ReadMessage() (messageType int, p []byte, err error) {
+func (m *MockChanConn) ReadMessage() (int, []byte, error) {
 	msg := <-m.ReadChan
 	return msg.MessageType, msg.Data, msg.Err
 }

@@ -1,7 +1,5 @@
 package room_manager
 
-import "attiladudas/backend/ws"
-
 func NewRoomManager() IRoomManager {
 	return newRoomManager()
 }
@@ -9,7 +7,7 @@ func NewRoomManager() IRoomManager {
 func newRoomManager() *roomManager {
 	manager := &roomManager{
 		roomsByName:       map[string]*room{},
-		roomsByConnection: map[ws.IConn]*room{},
+		roomsByConnection: map[IWSConn]*room{},
 		actions:           actions,
 	}
 

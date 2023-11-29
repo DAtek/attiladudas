@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	"attiladudas/backend/ws"
 	"encoding/json"
 
 	"github.com/DAtek/golidator"
@@ -13,7 +12,7 @@ type joinRoomData struct {
 	Room   string `json:"room"`
 }
 
-var joinRoom action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
+func joinRoom(manager *roomManager, conn IWSConn, msg *messageStruct) messageStruct {
 	data, err := parseData(&joinRoomData{}, msg)
 	if err != nil {
 		return messageStruct{

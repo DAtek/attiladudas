@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	"attiladudas/backend/ws"
 	"encoding/json"
 
 	"github.com/DAtek/golidator"
@@ -12,7 +11,7 @@ type pickSideData struct {
 	Side playerSide `json:"side"`
 }
 
-var pickSide action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
+func pickSide(manager *roomManager, conn IWSConn, msg *messageStruct) messageStruct {
 	room, ok := manager.roomsByConnection[conn]
 
 	if !ok {
@@ -52,7 +51,7 @@ var pickSide action = func(manager *roomManager, conn ws.IConn, msg *messageStru
 
 func (obj *pickSideData) GetValidators(params ...interface{}) golidator.ValidatorCollection {
 	room := params[0].(*room)
-	conn := params[1].(ws.IConn)
+	conn := params[1].(IWSConn)
 
 	return golidator.ValidatorCollection{
 		{Field: "side", Function: func() *golidator.ValueError {

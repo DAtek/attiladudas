@@ -1,15 +1,13 @@
 package room_manager
 
 import (
-	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
 	"testing"
 
-	fiar "attiladudas/backend/components/five_in_a_row"
-	fiar_mocks "attiladudas/backend/components/five_in_a_row/mocks"
+	fiar "api/components/five_in_a_row"
 
 	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
@@ -22,13 +20,13 @@ func TestMove(t *testing.T) {
 		defer timeout.Cancel()
 
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
-		conn2 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
+		conn2 := NewMockChanConn()
 
 		player1 := &player{name: "a", conn: conn1}
 		player2 := &player{name: "b", conn: conn2}
 		moveCalled := false
-		game := &fiar_mocks.MockGame{}
+		game := &fiar.MockGame{}
 
 		game.Move_ = func(playerName string, pos *fiar.Position) error {
 			moveCalled = true
@@ -75,12 +73,12 @@ func TestMove(t *testing.T) {
 
 	t.Run("Returns error if game ended", func(t *testing.T) {
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
-		conn2 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
+		conn2 := NewMockChanConn()
 
 		player1 := &player{name: "a", conn: conn1}
 		player2 := &player{name: "b", conn: conn2}
-		game := &fiar_mocks.MockGame{}
+		game := &fiar.MockGame{}
 
 		manager.roomsByConnection[conn1] = &room{
 			players: []*player{player1, player2},
@@ -115,12 +113,12 @@ func TestMove(t *testing.T) {
 	for _, scenario := range invalidPositionScenarios {
 		t.Run(scenario.name, func(t *testing.T) {
 			manager := newRoomManager()
-			conn1 := ws_mocks.NewMockChanConn()
-			conn2 := ws_mocks.NewMockChanConn()
+			conn1 := NewMockChanConn()
+			conn2 := NewMockChanConn()
 
 			player1 := &player{name: "a", conn: conn1}
 			player2 := &player{name: "b", conn: conn2}
-			game := &fiar_mocks.MockGame{}
+			game := &fiar.MockGame{}
 			game.GetWinner_ = func() *string { return nil }
 			game.GetSquares_ = func() [][]fiar.Square {
 				row := []fiar.Square{0, 0, 0}
@@ -147,7 +145,7 @@ func TestMove(t *testing.T) {
 
 	t.Run("Returns error if no room", func(t *testing.T) {
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
 
 		data := &moveMessageData{Position: []int{5, 5}}
 		msg := &messageStruct{}
@@ -163,13 +161,13 @@ func TestMove(t *testing.T) {
 
 	t.Run("Returns error if data is invalid", func(t *testing.T) {
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
 
 		player1 := &player{name: "a", conn: conn1}
 
 		manager.roomsByConnection[conn1] = &room{
 			players: []*player{player1},
-			game:    &fiar_mocks.MockGame{},
+			game:    &fiar.MockGame{},
 		}
 
 		msg := &messageStruct{
@@ -184,12 +182,12 @@ func TestMove(t *testing.T) {
 
 	t.Run("Returns error core game return error", func(t *testing.T) {
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
 
 		player1 := &player{name: "a", conn: conn1}
 
 		errorMessage := "UNEXPECTED_ERROR"
-		game := &fiar_mocks.MockGame{}
+		game := &fiar.MockGame{}
 		game.Move_ = func(playerName string, pos *fiar.Position) error {
 			return errors.New(errorMessage)
 		}

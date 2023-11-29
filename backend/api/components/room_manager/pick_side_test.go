@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -19,8 +18,8 @@ func TestPickSide(t *testing.T) {
 
 		manager := newRoomManager()
 		playerName := "player1"
-		p := &player{name: playerName, conn: ws_mocks.NewMockChanConn()}
-		conn2 := ws_mocks.NewMockChanConn()
+		p := &player{name: playerName, conn: NewMockChanConn()}
+		conn2 := NewMockChanConn()
 
 		manager.roomsByConnection[p.conn] = &room{
 			players: []*player{
@@ -57,8 +56,8 @@ func TestPickSide(t *testing.T) {
 
 		manager := newRoomManager()
 		playerName := "player1"
-		conn1 := ws_mocks.NewMockChanConn()
-		conn2 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
+		conn2 := NewMockChanConn()
 
 		manager.roomsByConnection[conn1] = &room{
 			players: []*player{
@@ -100,8 +99,8 @@ func TestPickSide(t *testing.T) {
 
 		manager := newRoomManager()
 		playerName := "player1"
-		conn1 := ws_mocks.NewMockChanConn()
-		conn2 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
+		conn2 := NewMockChanConn()
 
 		room := &room{
 			players: []*player{
@@ -146,7 +145,7 @@ func TestPickSide(t *testing.T) {
 	t.Run("Picking the same side is forbidden", func(t *testing.T) {
 		manager := newRoomManager()
 		playerName := "b"
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 		manager.roomsByConnection[conn] = &room{
 			players: []*player{
 				{
@@ -176,7 +175,7 @@ func TestPickSide(t *testing.T) {
 
 	t.Run("Picking side is forbidden until both players joined", func(t *testing.T) {
 		manager := newRoomManager()
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 
 		manager.roomsByConnection[conn] = &room{
 			players: []*player{{}},
@@ -198,7 +197,7 @@ func TestPickSide(t *testing.T) {
 
 	t.Run("Returns error if side is invalid", func(t *testing.T) {
 		manager := newRoomManager()
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 		manager.roomsByConnection[conn] = &room{
 			players: []*player{
 				{
@@ -227,7 +226,7 @@ func TestPickSide(t *testing.T) {
 
 	t.Run("Returns error if message data is invalid", func(t *testing.T) {
 		manager := newRoomManager()
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 		manager.roomsByConnection[conn] = &room{
 			players: []*player{
 				{
@@ -251,7 +250,7 @@ func TestPickSide(t *testing.T) {
 
 	t.Run("Returns error if no room found", func(t *testing.T) {
 		manager := newRoomManager()
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 
 		result := pickSide(manager, conn, &messageStruct{})
 

@@ -1,10 +1,6 @@
 package room_manager
 
-import (
-	"attiladudas/backend/ws"
-)
-
-func (manager *roomManager) cleanup(conn ws.IConn) {
+func (manager *roomManager) cleanup(conn IWSConn) {
 	room, ok := manager.roomsByConnection[conn]
 
 	if !ok {

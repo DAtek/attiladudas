@@ -1,7 +1,6 @@
 package room_manager
 
 import (
-	ws_mocks "attiladudas/backend/ws/mocks"
 	"encoding/json"
 	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +12,7 @@ func TestJoinRoom(t *testing.T) {
 		manager := newRoomManager()
 		playerName := "player1"
 		roomName := "room1"
-		conn := &ws_mocks.MockChanConn{}
+		conn := &MockChanConn{}
 
 		expectedRoom := &room{
 			name: roomName,
@@ -49,7 +48,7 @@ func TestJoinRoom(t *testing.T) {
 		defer timeout.Cancel()
 		manager := newRoomManager()
 		roomName := "room1"
-		conn := ws_mocks.NewMockChanConn()
+		conn := NewMockChanConn()
 		player1 := "Emily"
 		player2 := "Anna"
 
@@ -129,7 +128,7 @@ func TestJoinRoom(t *testing.T) {
 
 	t.Run("Returns error if data is invalid", func(t *testing.T) {
 		manager := newRoomManager()
-		conn1 := ws_mocks.NewMockChanConn()
+		conn1 := NewMockChanConn()
 
 		msg := &messageStruct{
 			Type: MessageTypeJoin,

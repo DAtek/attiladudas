@@ -1,8 +1,7 @@
 package room_manager
 
 import (
-	fiar "attiladudas/backend/components/five_in_a_row"
-	"attiladudas/backend/ws"
+	fiar "api/components/five_in_a_row"
 
 	"github.com/DAtek/golidator"
 )
@@ -12,7 +11,7 @@ type moveMessageData struct {
 	position *fiar.Position
 }
 
-var move action = func(manager *roomManager, conn ws.IConn, msg *messageStruct) messageStruct {
+func move(manager *roomManager, conn IWSConn, msg *messageStruct) messageStruct {
 	room, ok := manager.roomsByConnection[conn]
 	if !ok || room.game == nil {
 		return messageStruct{Type: MessageTypeBadMessage, Data: "NO_ROOM"}
