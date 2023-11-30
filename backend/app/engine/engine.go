@@ -38,20 +38,20 @@ func NewEngine(
 		}
 	}
 
-	engine.PATCH("/api/files/:id/rank/:rank/", requireUsername, handlerCollection.PatchFileRankHandler)
-	engine.GET("/api/galleries/:slug/", handlerCollection.GetGalleryHandler)
+	// engine.PATCH("/api/files/:id/rank/:rank/", requireUsername, handlerCollection.PatchFileRankHandler)
+	// engine.GET("/api/gallery/:slug/", handlerCollection.GetGalleryHandler)
 	engine.POST("/api/gallery/", requireUsername, handlerCollection.PostGalleryHandler)
 	engine.GET("/api/galleries/", handlerCollection.GetGalleriesHandler)
-	engine.PUT("/api/galleries/:id/", requireUsername, handlerCollection.PutGalleryHandler)
-	engine.DELETE("/api/galleries/:id/", requireUsername, handlerCollection.DeleteGalleryHandler)
-	engine.POST("/api/galleries/:id/files/", requireUsername, handlerCollection.PostFilesHandler)
-	engine.DELETE("/api/galleries/:id/files/", requireUsername, handlerCollection.DeleteFilesHandler)
+	engine.PUT("/api/gallery/:id/", requireUsername, handlerCollection.PutGalleryHandler)
+	engine.DELETE("/api/gallery/:id/", requireUsername, handlerCollection.DeleteGalleryHandler)
+	engine.POST("/api/gallery/:id/files/", requireUsername, handlerCollection.PostFilesHandler)
+	engine.DELETE("/api/gallery/:id/files/", requireUsername, handlerCollection.DeleteFilesHandler)
 	engine.POST("/api/token/", handlerCollection.PostTokenHandler)
 	engine.GET(
 		fmt.Sprintf("/api/resize/%s/:directory/:size/:filename/", mediaDirName),
 		handlerCollection.GetResizedImageHandler,
 	)
-	engine.GET("/ws/five-in-a-row/", handlerCollection.FiveInARowHandler)
+	// engine.GET("/ws/five-in-a-row/", handlerCollection.FiveInARowHandler)
 
 	return engine
 }

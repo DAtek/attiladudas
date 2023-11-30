@@ -91,7 +91,7 @@ func (store *galleryStore) GetGallery(input *GetGalleryInput) (*models.Gallery, 
 	}
 
 	if result.RowsAffected == 0 {
-		return nil, ErrorNotExisits
+		return nil, nil
 	}
 
 	return gallery, nil

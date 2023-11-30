@@ -4,6 +4,7 @@ pgks := "\
 ./api/components/gallery \
 ./api/components/room_manager \
 ./api/handlers/file_rank_patch \
+./api/handlers/gallery_get \
 ./api/handlers/token_post \
 ./api/handlers/ws_five_in_a_row
 "

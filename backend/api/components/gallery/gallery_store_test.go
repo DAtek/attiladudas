@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/DAtek/gotils"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 )
@@ -63,20 +64,18 @@ func TestGetGallery(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("Returns NOT_FOUND error if gallery doesn't exist", func(t *testing.T) {
+	t.Run("Returns nil if gallery doesn't exist", func(t *testing.T) {
 		tx := db.GetTestTransaction()
 		defer tx.Rollback()
-		populator := db.NewPopulator(tx)
 		store := NewGalleryStore(tx, api.EnvMediaDir.Load())
 
-		gallery := populator.Gallery(map[string]any{"Active": false})
-
-		input := &GetGalleryInput{Id: &gallery.Id}
+		input := &GetGalleryInput{Id: gotils.Pointer(uint(1))}
 		input.SetActive(true)
 
-		_, err := store.GetGallery(input)
+		gallery, err := store.GetGallery(input)
 
-		assert.EqualError(t, err, ErrorNotExisits.Error())
+		assert.Nil(t, gallery)
+		assert.Nil(t, err)
 	})
 }
 
