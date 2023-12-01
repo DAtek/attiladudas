@@ -40,7 +40,7 @@ func NewEngine(
 
 	// engine.PATCH("/api/files/:id/rank/:rank/", requireUsername, handlerCollection.PatchFileRankHandler)
 	// engine.GET("/api/gallery/:slug/", handlerCollection.GetGalleryHandler)
-	engine.POST("/api/gallery/", requireUsername, handlerCollection.PostGalleryHandler)
+	// engine.POST("/api/gallery/", requireUsername, handlerCollection.PostGalleryHandler)
 	engine.GET("/api/galleries/", handlerCollection.GetGalleriesHandler)
 	engine.PUT("/api/gallery/:id/", requireUsername, handlerCollection.PutGalleryHandler)
 	engine.DELETE("/api/gallery/:id/", requireUsername, handlerCollection.DeleteGalleryHandler)

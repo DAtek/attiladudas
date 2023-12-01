@@ -1,9 +1,9 @@
 package fiar
 
 import (
+	"api"
 	"api/components/room_manager"
 	"bytes"
-	"fibertools"
 	"fmt"
 	"net"
 	"net/http"
@@ -27,7 +27,7 @@ func TestFiveInARow(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginFiveInARow(roomManager),
 		)
 

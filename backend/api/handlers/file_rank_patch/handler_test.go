@@ -1,12 +1,12 @@
 package file_rank_patch
 
 import (
+	"api"
 	"api/components/auth"
 	"api/components/gallery"
 	"bytes"
 	"db/models"
 	"errors"
-	"fibertools"
 	"fmt"
 	"net/http"
 	"testing"
@@ -41,7 +41,7 @@ func TestPatchFileRank(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginPatchFileRank(fileStore, authCtx),
 		)
 
@@ -69,7 +69,7 @@ func TestPatchFileRank(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginPatchFileRank(fileStore, authCtx),
 		)
 
@@ -91,7 +91,7 @@ func TestPatchFileRank(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginPatchFileRank(&gallery.MockFileStore{}, authCtx),
 		)
 
@@ -118,7 +118,7 @@ func TestPatchFileRank(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginPatchFileRank(fileStore, authCtx),
 		)
 
@@ -145,7 +145,7 @@ func TestPatchFileRank(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginPatchFileRank(fileStore, authCtx),
 		)
 

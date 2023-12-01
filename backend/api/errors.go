@@ -7,17 +7,17 @@ import (
 )
 
 const (
-	errorRequired         = golidator.ErrorType("REQUIRED")
-	errorInvalidISO8601   = golidator.ErrorType("INVALID_ISO8601")
-	errorAlreadyExists    = golidator.ErrorType("ALREADY_EXISTS")
-	errorInvalid          = golidator.ErrorType("INVALID")
-	errorNotExists        = golidator.ErrorType("NOT_EXISTS")
-	errorWrongCredentials = golidator.ErrorType("WRONG_CREDENTIALS")
+	TypeErrorRequired         = golidator.ErrorType("REQUIRED")
+	TypeErrorAlreadyExists    = golidator.ErrorType("ALREADY_EXISTS")
+	TypeErrorInvalid          = golidator.ErrorType("INVALID")
+	TypeErrorNotExists        = golidator.ErrorType("NOT_EXISTS")
+	TypeErrorWrongCredentials = golidator.ErrorType("WRONG_CREDENTIALS")
 )
 
 var (
-	ErrorRequired         = fibertools.SimpleValidationError(errorRequired)
-	ErrorWrongCredentials = fibertools.SimpleValidationError(errorWrongCredentials)
-	ErrorInvalid          = fibertools.SimpleValidationError(errorInvalid)
-	ErrorNotExists        = fibertools.SimpleValidationError(errorNotExists)
+	ErrorRequired         = fibertools.SimpleValidationError(TypeErrorRequired)
+	ErrorWrongCredentials = fibertools.SimpleValidationError(TypeErrorWrongCredentials)
+	ErrorInvalid          = fibertools.SimpleValidationError(TypeErrorInvalid)
+	ErrorNotExists        = fibertools.SimpleValidationError(TypeErrorNotExists)
+	ErrorAlreadyExists    = fibertools.SimpleValidationError(TypeErrorAlreadyExists)
 )

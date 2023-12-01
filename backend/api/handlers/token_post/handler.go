@@ -5,6 +5,7 @@ import (
 	"fibertools"
 	"time"
 
+	"github.com/DAtek/gotils"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -34,14 +35,10 @@ func postToken(ctx *fiber.Ctx, session *gorm.DB, jwtContext auth.IJwt) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(err))
 	}
 
-	token, jsonErr := jwtContext.Encode(&auth.Claims{
+	token := gotils.ResultOrPanic(jwtContext.Encode(&auth.Claims{
 		Username: data.user.Username,
 		Exp:      uint(time.Now().Unix() + tokenExpirationSeconds),
-	})
-
-	if jsonErr != nil {
-		panic(jsonErr)
-	}
+	}))
 
 	ctx.Status(fiber.StatusCreated).JSON(&tokenResponse{Token: token})
 	return nil

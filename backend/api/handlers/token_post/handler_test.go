@@ -1,12 +1,12 @@
 package token_post
 
 import (
+	"api"
 	"api/components/auth"
 	"bytes"
 	"db"
 	"encoding/base64"
 	"encoding/json"
-	"fibertools"
 	"io"
 	"net/http"
 	"testing"
@@ -34,7 +34,7 @@ func TestPostToken(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginTokenPost(transaction, jwtContext),
 		)
 
@@ -82,7 +82,7 @@ func TestPostToken(t *testing.T) {
 			defer transaction.Rollback()
 			populator := db.NewPopulator(transaction)
 			populator.User(map[string]any{"Username": username, "PasswordHash": hashedPassword})
-			app := fibertools.NewApp(
+			app := api.AppWithMiddlewares(
 				PluginTokenPost(transaction, &auth.MockJwtContext{}),
 			)
 			body, _ := json.Marshal(postTokenBody{Username: scenario.username, Password: scenario.password})
@@ -106,7 +106,7 @@ func TestPostToken(t *testing.T) {
 		transaction := db.GetTestTransaction()
 		defer transaction.Rollback()
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginTokenPost(transaction, &auth.MockJwtContext{}),
 		)
 

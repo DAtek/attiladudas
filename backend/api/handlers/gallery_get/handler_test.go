@@ -1,12 +1,12 @@
 package gallery_get
 
 import (
+	"api"
 	"api/components/gallery"
 	"api/helpers"
 	"bytes"
 	"db/models"
 	"encoding/json"
-	"fibertools"
 	"fmt"
 	"io"
 	"net/http"
@@ -74,7 +74,7 @@ func TestGetGallery(t *testing.T) {
 			},
 		}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginGetGallery(galleryStore, fileStore),
 		)
 
@@ -103,7 +103,7 @@ func TestGetGallery(t *testing.T) {
 
 		fileStore := &gallery.MockFileStore{}
 
-		app := fibertools.NewApp(
+		app := api.AppWithMiddlewares(
 			PluginGetGallery(galleryStore, fileStore),
 		)
 

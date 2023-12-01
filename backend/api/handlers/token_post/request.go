@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 
 	"github.com/DAtek/golidator"
+	"github.com/DAtek/gotils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -47,12 +48,7 @@ func (p *postTokenBody) GetValidators(params ...any) golidator.ValidatorCollecti
 				return api.ErrorWrongCredentials
 			}
 
-			decoded, unexpectedErr := base64.StdEncoding.DecodeString(p.user.PasswordHash)
-
-			if unexpectedErr != nil {
-				panic(unexpectedErr)
-			}
-
+			decoded := gotils.ResultOrPanic(base64.StdEncoding.DecodeString(p.user.PasswordHash))
 			cryptErr := bcrypt.CompareHashAndPassword(decoded, []byte(p.Password))
 
 			if cryptErr != nil {
