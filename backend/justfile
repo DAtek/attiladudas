@@ -11,6 +11,7 @@ pgks := "\
 ./api/handlers/gallery_get \
 ./api/handlers/gallery_post \
 ./api/handlers/gallery_put \
+./api/handlers/resize_get \
 ./api/handlers/token_post \
 ./api/handlers/ws_five_in_a_row
 "
