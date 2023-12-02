@@ -27,7 +27,7 @@ func PluginPostGallery(authCtx auth.IAuthorization, galleryStore gallery.IGaller
 }
 
 func postGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore) error {
-	requestBody, err := fibertools.BindAndValidateJSON(&createUpdateGalleryBody{}, ctx, galleryStore)
+	requestBody, err := fibertools.BindAndValidateObj[CreateUpdateGalleryBody](ctx.BodyParser, galleryStore)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(err))
@@ -37,7 +37,7 @@ func postGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore) error {
 		Title:       requestBody.Title,
 		Slug:        requestBody.Slug,
 		Description: requestBody.Description,
-		Date:        requestBody.date,
+		Date:        requestBody.ParsedDate,
 		Active:      requestBody.Active,
 	}))
 

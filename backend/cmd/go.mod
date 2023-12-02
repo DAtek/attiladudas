@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/stretchr/testify v1.8.4 // indirect
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
 )

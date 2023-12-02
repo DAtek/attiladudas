@@ -20,7 +20,7 @@ func PluginGetGallery(galleryStore gallery.IGalleryStore, fileStore gallery.IFil
 }
 
 func getGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore, fileStore gallery.IFileStore) error {
-	data, err := fibertools.BindAndValidateParams(&getGalleryUriParams{}, ctx)
+	data, err := fibertools.BindAndValidateObj[getGalleryUriParams](ctx.ParamsParser)
 	if err != nil {
 		panic(err)
 	}

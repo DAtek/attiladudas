@@ -30,7 +30,7 @@ func PluginTokenPost(session *gorm.DB, jwtContext auth.IJwt) fibertools.Plugin {
 }
 
 func postToken(ctx *fiber.Ctx, session *gorm.DB, jwtContext auth.IJwt) error {
-	data, err := fibertools.BindAndValidateJSON(&postTokenBody{}, ctx, session)
+	data, err := fibertools.BindAndValidateObj[postTokenBody](ctx.BodyParser, session)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(err))
 	}

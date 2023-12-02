@@ -19,7 +19,7 @@ import (
 
 func TestPostGallery(t *testing.T) {
 	path := "/api/gallery/"
-	validInput := createUpdateGalleryBody{
+	validInput := CreateUpdateGalleryBody{
 		Title:       "Gallery1",
 		Slug:        "gallery-1",
 		Description: "Desc1",
@@ -96,7 +96,7 @@ func TestPostGallery(t *testing.T) {
 		assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 	})
 
-	badDate := gotils.ResultOrPanic(json.Marshal(createUpdateGalleryBody{
+	badDate := gotils.ResultOrPanic(json.Marshal(CreateUpdateGalleryBody{
 		Title:       "Gallery1",
 		Description: "Desc1",
 		Date:        "asd",
@@ -135,7 +135,7 @@ func TestPostGallery(t *testing.T) {
 		})
 	}
 
-	t.Run("Bad request ifgallery with slug exists", func(t *testing.T) {
+	t.Run("Bad request if gallery with slug exists", func(t *testing.T) {
 		galleryStore := &gallery.MockGalleryStore{
 			GalleryExists_: func(input *gallery.GetGalleryInput) (bool, error) {
 				return true, nil

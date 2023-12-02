@@ -36,9 +36,9 @@ func (s *MockFileStore) MediaDirName() string {
 }
 
 type MockGalleryStore struct {
-	CreateGallery_ func(*CreateUpdateGalleryInput) (*models.Gallery, error)
-	UpdateGallery_ func(uint, *CreateUpdateGalleryInput) error
-	DeleteGallery_ func(*models.Gallery) error
+	CreateGallery_ func(input *CreateUpdateGalleryInput) (*models.Gallery, error)
+	UpdateGallery_ func(galleryId uint, input *CreateUpdateGalleryInput) error
+	DeleteGallery_ func(gallery *models.Gallery) error
 	GetGallery_    func(input *GetGalleryInput) (*models.Gallery, error)
 	GetGalleries_  func(input *GetGalleriesInput) (*PaginatedGalleriesResult, error)
 	GalleryExists_ func(input *GetGalleryInput) (bool, error)

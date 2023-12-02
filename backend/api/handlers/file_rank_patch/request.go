@@ -17,9 +17,6 @@ func (obj *patchFileRankPathParams) GetValidators(ctx ...interface{}) golidator.
 
 	return []*golidator.Validator{
 		{Field: "id", Function: func() *golidator.ValueError {
-			if obj.FileId == nil {
-				return api.ErrorInvalid
-			}
 			file, err := fileStore.GetFile(*obj.FileId)
 			if err != nil {
 				panic(err)
@@ -31,9 +28,6 @@ func (obj *patchFileRankPathParams) GetValidators(ctx ...interface{}) golidator.
 			return nil
 		}},
 		{Field: "rank", Function: func() *golidator.ValueError {
-			if obj.Rank == nil {
-				return api.ErrorInvalid
-			}
 			return nil
 		}},
 	}

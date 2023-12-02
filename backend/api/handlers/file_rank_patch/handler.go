@@ -7,7 +7,6 @@ import (
 	"fibertools"
 	"net/http"
 
-	"github.com/DAtek/golidator"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -23,8 +22,8 @@ func PluginPatchFileRank(store gallery.IFileStore, authCtx auth.IAuthorization) 
 }
 
 func patchFileRank(ctx *fiber.Ctx, store gallery.IFileStore) error {
-	input, err := fibertools.BindAndValidateParams(&patchFileRankPathParams{}, ctx, store)
-	if err := golidator.Validate(input, store); err != nil {
+	input, err := fibertools.BindAndValidateObj[patchFileRankPathParams](ctx.ParamsParser, store)
+	if err != nil {
 		ctx.Status(http.StatusNotFound)
 		return nil
 	}
