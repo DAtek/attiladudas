@@ -20,7 +20,7 @@ func PluginPostFiles(authCtx auth.IAuthorization, galleryStore gallery.IGalleryS
 	}
 
 	return func(app *fiber.App) {
-		app.Post("/api/gallery/:id/files/", handlers.RequireUsername(authCtx), handler)
+		app.Post("/api/gallery/:id/files/", handlers.CreateAuthHandler(authCtx), handler)
 	}
 }
 

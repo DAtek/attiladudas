@@ -4,6 +4,7 @@ import (
 	"api/components/auth"
 	"api/components/gallery"
 	"api/handlers"
+	"api/handlers/shared"
 	"fibertools"
 
 	"github.com/DAtek/gotils"
@@ -22,12 +23,12 @@ func PluginPostGallery(authCtx auth.IAuthorization, galleryStore gallery.IGaller
 	}
 
 	return func(app *fiber.App) {
-		app.Post(path, handlers.RequireUsername(authCtx), handler)
+		app.Post(path, handlers.CreateAuthHandler(authCtx), handler)
 	}
 }
 
 func postGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore) error {
-	requestBody, err := fibertools.BindAndValidateObj[CreateUpdateGalleryBody](ctx.BodyParser, galleryStore)
+	requestBody, err := fibertools.BindAndValidateObj[shared.CreateUpdateGalleryBody](ctx.BodyParser, galleryStore)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(err))

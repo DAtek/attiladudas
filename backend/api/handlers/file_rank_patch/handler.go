@@ -16,7 +16,7 @@ func PluginPatchFileRank(store gallery.IFileStore, authCtx auth.IAuthorization) 
 		return patchFileRank(ctx, store)
 	}
 	return func(app *fiber.App) {
-		app.Patch(path, handlers.RequireUsername(authCtx), handler)
+		app.Patch(path, handlers.CreateAuthHandler(authCtx), handler)
 	}
 }
 

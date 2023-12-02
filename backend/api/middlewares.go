@@ -12,7 +12,7 @@ import (
 
 func PluginMiddlewares() fibertools.Plugin {
 	return func(app *fiber.App) {
-		app.Use(recover.New())
+		app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 		app.Use(cors.New())
 
 		loggerConfig := logger.Config{

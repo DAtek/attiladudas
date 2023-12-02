@@ -45,7 +45,7 @@ func NewEngine(
 	// engine.PUT("/api/gallery/:id/", requireUsername, handlerCollection.PutGalleryHandler)
 	// engine.DELETE("/api/gallery/:id/", requireUsername, handlerCollection.DeleteGalleryHandler)
 	// engine.POST("/api/gallery/:id/files/", requireUsername, handlerCollection.PostFilesHandler)
-	engine.DELETE("/api/gallery/:id/files/", requireUsername, handlerCollection.DeleteFilesHandler)
+	// engine.DELETE("/api/gallery/:id/files/", requireUsername, handlerCollection.DeleteFilesHandler)
 	// engine.POST("/api/token/", handlerCollection.PostTokenHandler)
 	engine.GET(
 		fmt.Sprintf("/api/resize/%s/:directory/:size/:filename/", mediaDirName),

@@ -4,6 +4,7 @@ import (
 	"api"
 	"api/components/auth"
 	"api/components/gallery"
+	"api/handlers/shared"
 	"api/helpers"
 	"bytes"
 	"db/models"
@@ -19,7 +20,7 @@ import (
 
 func TestPostGallery(t *testing.T) {
 	path := "/api/gallery/"
-	validInput := CreateUpdateGalleryBody{
+	validInput := shared.CreateUpdateGalleryBody{
 		Title:       "Gallery1",
 		Slug:        "gallery-1",
 		Description: "Desc1",
@@ -96,7 +97,7 @@ func TestPostGallery(t *testing.T) {
 		assert.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 	})
 
-	badDate := gotils.ResultOrPanic(json.Marshal(CreateUpdateGalleryBody{
+	badDate := gotils.ResultOrPanic(json.Marshal(shared.CreateUpdateGalleryBody{
 		Title:       "Gallery1",
 		Description: "Desc1",
 		Date:        "asd",

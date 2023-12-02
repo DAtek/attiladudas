@@ -4,7 +4,6 @@ import (
 	"api/components/auth"
 	"api/components/gallery"
 	"api/handlers"
-	"api/handlers/gallery_post"
 	"api/handlers/shared"
 	"fibertools"
 
@@ -16,7 +15,7 @@ func PluginPutGallery(authCtx auth.IAuthorization, galleryStore gallery.IGallery
 		return putGallery(ctx, galleryStore)
 	}
 	return func(app *fiber.App) {
-		app.Put("/api/gallery/:id/", handlers.RequireUsername(authCtx), handler)
+		app.Put("/api/gallery/:id/", handlers.CreateAuthHandler(authCtx), handler)
 	}
 }
 
@@ -26,7 +25,7 @@ func putGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore) error {
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
-	requestBody, validationErr := fibertools.BindAndValidateObj[gallery_post.CreateUpdateGalleryBody](ctx.BodyParser, galleryStore, pathParam.Gallery)
+	requestBody, validationErr := fibertools.BindAndValidateObj[shared.CreateUpdateGalleryBody](ctx.BodyParser, galleryStore, pathParam.Gallery)
 	if validationErr != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(validationErr))
 	}

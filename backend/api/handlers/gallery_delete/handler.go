@@ -16,7 +16,7 @@ func PluginDeleteGallery(authCtx auth.IAuthorization, galleryStore gallery.IGall
 	}
 
 	return func(app *fiber.App) {
-		app.Delete("/api/gallery/:id/", handlers.RequireUsername(authCtx), handler)
+		app.Delete("/api/gallery/:id/", handlers.CreateAuthHandler(authCtx), handler)
 	}
 }
 

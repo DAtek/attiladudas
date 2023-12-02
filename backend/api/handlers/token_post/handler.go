@@ -40,6 +40,5 @@ func postToken(ctx *fiber.Ctx, session *gorm.DB, jwtContext auth.IJwt) error {
 		Exp:      uint(time.Now().Unix() + tokenExpirationSeconds),
 	}))
 
-	ctx.Status(fiber.StatusCreated).JSON(&tokenResponse{Token: token})
-	return nil
+	return ctx.Status(fiber.StatusCreated).JSON(&tokenResponse{Token: token})
 }

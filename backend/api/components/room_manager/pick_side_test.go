@@ -2,7 +2,6 @@ package room_manager
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"testing"
 
@@ -169,7 +168,6 @@ func TestPickSide(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		resultStr := string(result.Data)
-		fmt.Printf("resultStr: %v\n", resultStr)
 		assert.True(t, strings.Contains(resultStr, "SIDE_ALREADY_TAKEN"))
 	})
 
@@ -191,7 +189,6 @@ func TestPickSide(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		resultStr := string(result.Data)
-		fmt.Printf("resultStr: %v\n", resultStr)
 		assert.True(t, strings.Contains(resultStr, "BOTH_PLAYERS_MUST_JOIN"))
 	})
 
@@ -220,7 +217,6 @@ func TestPickSide(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		resultStr := string(result.Data)
-		fmt.Printf("resultStr: %v\n", resultStr)
 		assert.True(t, strings.Contains(resultStr, "INVALID_SIDE"))
 	})
 
@@ -244,7 +240,6 @@ func TestPickSide(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		resultStr := string(result.Data)
-		fmt.Printf("resultStr: %v\n", resultStr)
 		assert.True(t, strings.Contains(resultStr, "INVALID_DATA"))
 	})
 
@@ -256,7 +251,6 @@ func TestPickSide(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		resultStr := string(result.Data)
-		fmt.Printf("resultStr: %v\n", resultStr)
 		assert.True(t, strings.Contains(resultStr, "NO_ROOM"))
 	})
 

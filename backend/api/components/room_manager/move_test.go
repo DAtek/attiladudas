@@ -3,7 +3,6 @@ package room_manager
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 	"testing"
 
@@ -98,7 +97,6 @@ func TestMove(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		errorMsg := string(result.Data)
-		fmt.Printf("errorMsg: %v\n", errorMsg)
 		assert.True(t, strings.Contains(errorMsg, "GAME_ALREADY_ENDED"))
 	})
 
@@ -138,7 +136,6 @@ func TestMove(t *testing.T) {
 
 			assert.Equal(t, MessageTypeBadMessage, result.Type)
 			errorMsg := string(result.Data)
-			fmt.Printf("errorMsg: %v\n", errorMsg)
 			assert.True(t, strings.Contains(errorMsg, "INVALID_POSITION"))
 		})
 	}
@@ -155,7 +152,6 @@ func TestMove(t *testing.T) {
 
 		assert.Equal(t, MessageTypeBadMessage, result.Type)
 		errorMsg := string(result.Data)
-		fmt.Printf("errorMsg: %v\n", errorMsg)
 		assert.True(t, strings.Contains(errorMsg, "NO_ROOM"))
 	})
 
