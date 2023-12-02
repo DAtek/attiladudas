@@ -5,7 +5,6 @@ import (
 	"api/components/gallery"
 	"api/handlers"
 	"fibertools"
-	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,15 +22,11 @@ func PluginPatchFileRank(store gallery.IFileStore, authCtx auth.IAuthorization) 
 
 func patchFileRank(ctx *fiber.Ctx, store gallery.IFileStore) error {
 	input, err := fibertools.BindAndValidateObj[patchFileRankPathParams](ctx.ParamsParser, store)
+
 	if err != nil {
-		ctx.Status(http.StatusNotFound)
+		ctx.Status(fiber.StatusNotFound)
 		return nil
 	}
-	dbErr := store.UpdateFileRank(&gallery.UpdateFileRankInput{FileId: *input.FileId, Rank: *input.Rank})
 
-	if err != nil {
-		panic(dbErr)
-	}
-
-	return nil
+	return store.UpdateFileRank(&gallery.UpdateFileRankInput{FileId: *input.FileId, Rank: *input.Rank})
 }

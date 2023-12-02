@@ -5,8 +5,8 @@ import (
 	"api/components/gallery"
 	"api/handlers"
 	"api/handlers/gallery_post"
+	"api/handlers/shared"
 	"fibertools"
-	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,12 +21,12 @@ func PluginPutGallery(authCtx auth.IAuthorization, galleryStore gallery.IGallery
 }
 
 func putGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore) error {
-	pathParam, err := fibertools.BindAndValidateObj[putGalleryPath](ctx.ParamsParser, galleryStore)
+	pathParam, err := fibertools.BindAndValidateObj[shared.GalleryIdInPath](ctx.ParamsParser, galleryStore)
 	if err != nil {
-		return ctx.SendStatus(http.StatusNotFound)
+		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
-	requestBody, validationErr := fibertools.BindAndValidateObj[gallery_post.CreateUpdateGalleryBody](ctx.BodyParser, galleryStore, pathParam.gallery)
+	requestBody, validationErr := fibertools.BindAndValidateObj[gallery_post.CreateUpdateGalleryBody](ctx.BodyParser, galleryStore, pathParam.Gallery)
 	if validationErr != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fibertools.JsonErrorFromValidationError(validationErr))
 	}

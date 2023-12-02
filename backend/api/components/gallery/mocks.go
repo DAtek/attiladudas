@@ -3,8 +3,8 @@ package gallery
 import "db/models"
 
 type MockFileStore struct {
-	AddFiles_            func(*models.Gallery, []*FileInput) error
-	DeleteFiles_         func(*models.Gallery, []uint) error
+	AddFiles_            func(gallery *models.Gallery, input []*FileInput) error
+	DeleteFiles_         func(gallery *models.Gallery, ids []uint) error
 	GetFileDownloadPath_ func(gallery *models.Gallery, filename string) string
 	UpdateFileRank_      func(data *UpdateFileRankInput) error
 	GetFile_             func(id uint) (*models.File, error)
