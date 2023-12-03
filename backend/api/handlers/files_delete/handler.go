@@ -31,7 +31,7 @@ func deleteFiles(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore, fileStore g
 	}
 
 	if err := fileStore.DeleteFiles(pathParam.Gallery, ids.Ids); err != nil {
-		panic(err)
+		return err
 	}
 
 	return nil

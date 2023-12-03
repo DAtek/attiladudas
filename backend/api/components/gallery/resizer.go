@@ -2,7 +2,6 @@ package gallery
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"image"
 	"image/jpeg"
@@ -123,12 +122,7 @@ func (t *thumbnail) crop() error {
 }
 
 func (t *thumbnail) cropWidth() error {
-	img, ok := t.img.(subImager)
-
-	if !ok {
-		return errors.New("SubImage_NOT_IMPLEMENTED_ON_IMAGE")
-	}
-
+	img := t.img.(subImager)
 	diff := t.img.Bounds().Max.X - int(t.newSize.Width)
 	halfDiff := diff / 2
 	t.img = img.SubImage(image.Rectangle{
@@ -143,11 +137,7 @@ func (t *thumbnail) cropWidth() error {
 }
 
 func (t *thumbnail) cropHeight() error {
-	img, ok := t.img.(subImager)
-	if !ok {
-		return errors.New("SubImage_NOT_IMPLEMENTED_ON_IMAGE")
-	}
-
+	img := t.img.(subImager)
 	diff := t.img.Bounds().Max.Y - int(t.newSize.Height)
 	halfDiff := diff / 2
 	t.img = img.SubImage(image.Rectangle{

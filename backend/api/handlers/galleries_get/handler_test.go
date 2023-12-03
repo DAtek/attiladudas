@@ -121,7 +121,8 @@ func TestGetGalleries(t *testing.T) {
 	}{
 		{"page size invalid 1", gotils.Pointer("-2"), gotils.Pointer("1")},
 		{"page size invalid 2", nil, gotils.Pointer("1")},
-		{"page invalid", gotils.Pointer("1"), gotils.Pointer("-1")},
+		{"page invalid 1", gotils.Pointer("1"), gotils.Pointer("-1")},
+		{"page invalid 2", gotils.Pointer("1"), nil},
 	}
 
 	for _, s := range invalidScenarios {

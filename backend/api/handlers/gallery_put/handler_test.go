@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"db/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"testing"
@@ -219,5 +220,42 @@ func TestPutGallery(t *testing.T) {
 		resp := gotils.ResultOrPanic(app.Test(req))
 
 		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	})
+
+	t.Run("Internal server error if update fails", func(t *testing.T) {
+		authCtx := &auth.MockAuthContext{
+			RequireUsername_: func(authHeader string) error {
+				return nil
+			},
+		}
+
+		galleryStore := &gallery.MockGalleryStore{
+			GalleryExists_: func(input *gallery.GetGalleryInput) (bool, error) { return true, nil },
+			GetGallery_: func(input *gallery.GetGalleryInput) (*models.Gallery, error) {
+				return &models.Gallery{
+					Id:    *input.Id,
+					Title: validInput.Title,
+					Slug:  validInput.Slug,
+				}, nil
+			},
+			UpdateGallery_: func(galleryId uint, input *gallery.CreateUpdateGalleryInput) error {
+				return errors.New("unexpected")
+			},
+		}
+
+		app := api.AppWithMiddlewares(
+			PluginPutGallery(authCtx, galleryStore),
+		)
+
+		req := gotils.ResultOrPanic(http.NewRequest(
+			"PUT",
+			path(validId),
+			bytes.NewBuffer([]byte(validBody)),
+		))
+		req.Header.Add("content-type", "application/json")
+
+		resp := gotils.ResultOrPanic(app.Test(req))
+
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	})
 }

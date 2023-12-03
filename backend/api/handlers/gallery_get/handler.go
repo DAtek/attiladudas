@@ -21,22 +21,11 @@ func PluginGetGallery(galleryStore gallery.IGalleryStore, fileStore gallery.IFil
 }
 
 func getGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore, fileStore gallery.IFileStore) error {
-	data, err := fibertools.BindAndValidateObj[getGalleryUriParams](ctx.ParamsParser)
+	data, err := fibertools.BindAndValidateObj[getGalleryUriParams](ctx.ParamsParser, galleryStore)
 	if err != nil {
-		panic(err)
-	}
-
-	getGalleryInput := &gallery.GetGalleryInput{Slug: &data.Slug}
-	getGalleryInput.SetActive(true)
-	gallery, storeErr := galleryStore.GetGallery(getGalleryInput)
-	if storeErr != nil {
-		panic(err)
-	}
-
-	if gallery == nil {
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
-	respData := shared.ConvertDbGalleryToApiGallery(gallery, fileStore)
+	respData := shared.ConvertDbGalleryToApiGallery(data.gallery, fileStore)
 	return ctx.JSON(respData)
 }

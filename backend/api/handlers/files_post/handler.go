@@ -56,7 +56,7 @@ func postFiles(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore, fileStore gal
 	}
 
 	if err := fileStore.AddFiles(pathParam.Gallery, input); err != nil {
-		panic(err)
+		return err
 	}
 
 	ctx.Status(fiber.StatusCreated)

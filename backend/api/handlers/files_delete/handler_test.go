@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"db/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"testing"
@@ -151,5 +152,45 @@ func TestDeleteFiles(t *testing.T) {
 		resp := gotils.ResultOrPanic(app.Test(req))
 
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	})
+
+	t.Run("Internal server error if deletion fails", func(t *testing.T) {
+		galleryStore := &gallery.MockGalleryStore{
+			GetGallery_: func(input *gallery.GetGalleryInput) (*models.Gallery, error) {
+				return &models.Gallery{Id: *input.Id}, nil
+			},
+		}
+		deleteCalled := false
+		galleryId := uint(42)
+		reqData := deleteFilesBody{Ids: []uint{1, 2}}
+
+		fileStore := &gallery.MockFileStore{
+			DeleteFiles_: func(gallery *models.Gallery, fileIds []uint) error {
+				deleteCalled = true
+				return errors.New("unexpected")
+			},
+		}
+
+		authCtx := auth.MockAuthContext{
+			RequireUsername_: func(authHeader string) error { return nil },
+		}
+
+		app := api.AppWithMiddlewares(
+			PluginDeleteFiles(&authCtx, galleryStore, fileStore),
+		)
+
+		body := gotils.ResultOrPanic(json.Marshal(reqData))
+
+		req := gotils.ResultOrPanic(http.NewRequest(
+			"DELETE",
+			path(galleryId),
+			bytes.NewBuffer(body),
+		))
+		req.Header.Add("Content-Type", "application/json")
+
+		resp := gotils.ResultOrPanic(app.Test(req))
+
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+		assert.True(t, deleteCalled)
 	})
 }

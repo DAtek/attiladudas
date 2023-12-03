@@ -37,7 +37,9 @@ test *args:
 
 
 test-cover *args:
-    gotestsum -f dots-v2 -- {{ args }} -coverprofile {{ coverfile }} {{ pgks }}
+    gotestsum -f dots-v2 -- {{ args }} -coverprofile .coverage.tmp {{ pgks }}
+    cat .coverage.tmp | grep -v "mocks.go" > {{ coverfile }}
+    rm -f .coverage.tmp
 
 
 show-coverage:

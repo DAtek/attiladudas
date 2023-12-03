@@ -118,4 +118,28 @@ func TestGetGallery(t *testing.T) {
 
 		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 	})
+
+	t.Run("Returns NOT_FOUND when slug not provided", func(t *testing.T) {
+		galleryStore := &gallery.MockGalleryStore{
+			GetGallery_: func(input *gallery.GetGalleryInput) (*models.Gallery, error) {
+				return nil, nil
+			},
+		}
+
+		fileStore := &gallery.MockFileStore{}
+
+		app := api.AppWithMiddlewares(
+			PluginGetGallery(galleryStore, fileStore),
+		)
+
+		req := gotils.ResultOrPanic(http.NewRequest(
+			"GET",
+			getPath(""),
+			&bytes.Buffer{},
+		))
+
+		resp := gotils.ResultOrPanic(app.Test(req))
+
+		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	})
 }

@@ -87,7 +87,7 @@ func TestPatchFileRank(t *testing.T) {
 	t.Run("Test unauthorized", func(t *testing.T) {
 		authCtx := &auth.MockAuthContext{
 			RequireUsername_: func(authHeader string) error {
-				return errors.New("INVALID")
+				return auth.InvalidAuthHeaderError
 			},
 		}
 

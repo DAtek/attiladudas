@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"db/models"
 	"encoding/json"
+	"errors"
 	"fibertools"
 	"fmt"
 	"io"
@@ -196,6 +197,42 @@ func TestPostFiles(t *testing.T) {
 
 		resp := gotils.ResultOrPanic(app.Test(req))
 		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	})
+
+	t.Run("Test internal server error if upload fails", func(t *testing.T) {
+		authCtx := &auth.MockAuthContext{
+			RequireUsername_: func(authHeader string) error { return nil },
+		}
+
+		galleryId := uint(42)
+		bodyWithFiles := newMultipartBody()
+
+		fileStore := &gallery.MockFileStore{
+			AddFiles_: func(g *models.Gallery, fi []*gallery.FileInput) error {
+				return errors.New("unexpected")
+			},
+		}
+
+		galleryStore := &gallery.MockGalleryStore{
+			GetGallery_: func(input *gallery.GetGalleryInput) (*models.Gallery, error) {
+				return &models.Gallery{Id: *input.Id}, nil
+			},
+		}
+
+		app := api.AppWithMiddlewares(
+			PluginPostFiles(authCtx, galleryStore, fileStore),
+		)
+
+		req := gotils.ResultOrPanic(http.NewRequest(
+			"POST",
+			path(galleryId),
+			bodyWithFiles.body,
+		))
+
+		req.Header.Set("content-type", bodyWithFiles.multipartWriter.FormDataContentType())
+
+		resp := gotils.ResultOrPanic(app.Test(req))
+		assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 	})
 }
 
