@@ -9,6 +9,7 @@
 - `go`
 - `gotestsum`
 - `node`
+- For the deployment: `ansible`
 
 ## Running the tests locally:
 - `cd backend`
@@ -20,3 +21,8 @@
 - `just run-all -d`
 
 If you have problems with uploading files, then it's probably because of some docker permission errors. In that case recreate the `.tmp/media` directory and permit everything (`chmod 777`), then restart everything and it'll work.
+
+
+## Deployment
+- `cd deployment`
+- `ansible-playbook -i inventories/dev.yaml playbooks/update.yaml`

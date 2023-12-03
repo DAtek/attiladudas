@@ -38,6 +38,7 @@ build-backend:
     mkdir .dist 2>/dev/null
     rm -rf .dist/backend
     mkdir .dist/backend
+    export CGO_ENABLED=0
     for item in create-user migrate run-server
     do
         go build -C backend ./cmd/${item}
