@@ -11,9 +11,9 @@ import (
 
 const path = "/api/file/:id/rank/:rank/"
 
-func PluginPatchFileRank(store gallery.IFileStore, authCtx auth.IAuthorization) fibertools.Plugin {
+func PluginPatchFileRank(fileStore gallery.IFileStore, authCtx auth.IAuthorization) fibertools.Plugin {
 	handler := func(ctx *fiber.Ctx) error {
-		return patchFileRank(ctx, store)
+		return patchFileRank(ctx, fileStore)
 	}
 	return func(app *fiber.App) {
 		app.Patch(path, handlers.CreateAuthHandler(authCtx), handler)

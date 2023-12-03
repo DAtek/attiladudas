@@ -1,4 +1,4 @@
-package gallery_get
+package shared
 
 import (
 	"api/components/gallery"

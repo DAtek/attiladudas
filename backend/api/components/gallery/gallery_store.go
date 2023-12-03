@@ -82,7 +82,9 @@ func (store *galleryStore) GetGallery(input *GetGalleryInput) (*models.Gallery, 
 	}
 
 	gallery := &models.Gallery{}
-	query := store.db.Preload("Files")
+	query := store.db.Preload("Files", func(session *gorm.DB) *gorm.DB {
+		return session.Order("file.rank DESC")
+	})
 	query = buildWhereConditions(query, input)
 	result := query.Find(gallery)
 

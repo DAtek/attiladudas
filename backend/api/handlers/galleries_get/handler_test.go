@@ -4,7 +4,7 @@ import (
 	"api"
 	"api/components/auth"
 	"api/components/gallery"
-	"api/handlers/gallery_get"
+	"api/handlers/shared"
 	"api/helpers"
 	"bytes"
 	"db/models"
@@ -43,14 +43,14 @@ func TestGetGalleries(t *testing.T) {
 		}
 
 		wantedResponse := &GalleriesResponse{
-			Galleries: []*gallery_get.GalleryResponse{
+			Galleries: []*shared.GalleryResponse{
 				{
 					Id:          galleries[0].Id,
 					Title:       galleries[0].Title,
 					Description: galleries[0].Description,
 					Active:      galleries[0].Active,
 					Date:        dateString,
-					Files: []*gallery_get.File{
+					Files: []*shared.File{
 						{
 							Filename: galleries[0].Files[0].Filename,
 							Path:     "fake path",
@@ -61,7 +61,7 @@ func TestGetGalleries(t *testing.T) {
 				{
 					Id:    galleries[1].Id,
 					Title: galleries[1].Title,
-					Files: []*gallery_get.File{},
+					Files: []*shared.File{},
 					Date:  dateString,
 				},
 			},

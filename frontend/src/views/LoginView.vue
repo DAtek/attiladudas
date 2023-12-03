@@ -1,26 +1,28 @@
 <script setup lang="ts">
-import {reactive} from "vue"
-import {apiClient} from "@/utils/api_client"
-import {router, routeNames} from "@/utils/router"
-import InputField from "@/components/InputField.vue";
-
+import { reactive } from 'vue'
+import { apiClient } from '@/utils/api_client'
+import { router, routeNames } from '@/utils/router'
+import InputField from '@/components/InputField.vue'
 
 const data = reactive({
-  username: "",
-  password: "",
-  errorMsg: "",
+  username: '',
+  password: '',
+  errorMsg: ''
 })
 
 async function login(event: Event) {
   event.preventDefault()
-  data.errorMsg = ""
-  const result = await apiClient.postToken({username: data.username, password: data.password})
-  if (!result.error){
-      await router.push({name: routeNames.ADMIN})
-      return
+  data.errorMsg = ''
+  const result = await apiClient.postToken({
+    username: data.username,
+    password: data.password
+  })
+  if (!result.error) {
+    await router.push({ name: routeNames.ADMIN })
+    return
   }
 
-  data.errorMsg = "Invalid username or password."
+  data.errorMsg = 'Invalid username or password.'
 }
 </script>
 
@@ -39,9 +41,19 @@ async function login(event: Event) {
           :required="true"
           type="password"
         />
-        <p v-if="data.errorMsg" class="help is-danger">{{ data.errorMsg }}</p>
+        <p
+          v-if="data.errorMsg"
+          class="help is-danger"
+        >
+          {{ data.errorMsg }}
+        </p>
         <div class="control has-text-left">
-          <button type="submit" class="button is-link">Login</button>
+          <button
+            type="submit"
+            class="button is-link"
+          >
+            Login
+          </button>
         </div>
       </form>
     </div>

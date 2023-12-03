@@ -3,8 +3,14 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">{{ initialGallery ? "Update galley" : "Create gallery" }}</p>
-        <button class="delete" aria-label="close" @click="closeModal"/>
+        <p class="modal-card-title">
+          {{ initialGallery ? 'Update galley' : 'Create gallery' }}
+        </p>
+        <button
+          class="delete"
+          aria-label="close"
+          @click="closeModal"
+        />
       </header>
       <form @submit="submit">
         <section class="modal-card-body has-text-left">
@@ -32,13 +38,26 @@
             placeholder="Date"
           />
           <label class="checkbox">
-            <input type="checkbox" v-model="data.active">
+            <input
+              type="checkbox"
+              v-model="data.active"
+            />
             Active
           </label>
         </section>
         <footer class="modal-card-foot">
-          <button type="submit" class="button is-success">Save changes</button>
-          <button class="button" @click="closeModal">Close</button>
+          <button
+            type="submit"
+            class="button is-success"
+          >
+            Save changes
+          </button>
+          <button
+            class="button"
+            @click="closeModal"
+          >
+            Close
+          </button>
         </footer>
       </form>
     </div>
@@ -46,41 +65,41 @@
 </template>
 
 <script setup lang="ts">
-import {reactive} from "vue"
-import {notificationCollection, NotificationItem} from "@/components/notification/notification"
-import type {FieldError, PostGalleryData, PostGalleryResult, Result} from "@/utils/api_client"
-import {apiClient} from "@/utils/api_client"
-import InputField from "@/components/InputField.vue"
-import {createUpdateGalleryFormState} from "@/components/create_update_gallery_form/state";
-import {galleryTableState} from "@/components/gallery_table/state";
-import {getErrorsForField} from "@/utils/errors";
+import { reactive } from 'vue'
+import { notificationCollection, NotificationItem } from '@/components/notification/notification'
+import type { FieldError, PostGalleryData, PostGalleryResult, Result } from '@/utils/api_client'
+import { apiClient } from '@/utils/api_client'
+import InputField from '@/components/InputField.vue'
+import { createUpdateGalleryFormState } from '@/components/create_update_gallery_form/state'
+import { galleryTableState } from '@/components/gallery_table/state'
+import { getErrorsForField } from '@/utils/errors'
 
-interface State extends PostGalleryData{
+interface State extends PostGalleryData {
   id: number
   errors: FieldError[]
 }
 const initialGallery = createUpdateGalleryFormState.gallery
 const initialData = initialGallery
   ? {
-    id: initialGallery.id,
-    title: initialGallery.title,
-    slug: initialGallery.slug,
-    description: initialGallery.description,
-    date: initialGallery.date,
-    active: initialGallery.active,
-    errors: [],
-  }
+      id: initialGallery.id,
+      title: initialGallery.title,
+      slug: initialGallery.slug,
+      description: initialGallery.description,
+      date: initialGallery.date,
+      active: initialGallery.active,
+      errors: []
+    }
   : {
-    id: 0,
-    title: "",
-    slug: "",
-    description: "",
-    date: "",
-    active: false,
-    errors: [],
-  }
+      id: 0,
+      title: '',
+      slug: '',
+      description: '',
+      date: '',
+      active: false,
+      errors: []
+    }
 
-const data = reactive<State>({...initialData})
+const data = reactive<State>({ ...initialData })
 
 async function submit(event: Event) {
   event.preventDefault()
@@ -89,10 +108,10 @@ async function submit(event: Event) {
   let successMessage: string
   if (initialGallery) {
     result = await apiClient.putGallery(data)
-    successMessage = "Gallery has been updated"
+    successMessage = 'Gallery has been updated'
   } else {
     result = await apiClient.postGallery(data)
-    successMessage = "Gallery has been created"
+    successMessage = 'Gallery has been created'
   }
 
   data.errors = result.error ? result.error.errors : []
@@ -101,10 +120,7 @@ async function submit(event: Event) {
     return
   }
 
-  notificationCollection.addItem(new NotificationItem(
-      "SUCCESS",
-      successMessage
-    ))
+  notificationCollection.addItem(new NotificationItem('SUCCESS', successMessage))
 
   // Gallery has been created
   if (result.result?.id) {
@@ -121,5 +137,4 @@ async function submit(event: Event) {
 function closeModal() {
   createUpdateGalleryFormState.display = false
 }
-
 </script>

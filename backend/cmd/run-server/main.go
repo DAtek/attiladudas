@@ -1,95 +1,74 @@
 package main
 
 import (
-	app_auth "attiladudas/backend/app/auth"
-	"attiladudas/backend/app/engine"
-	app_fiar "attiladudas/backend/app/five_in_a_row"
-	app_gallery "attiladudas/backend/app/gallery"
-	"attiladudas/backend/components"
-	"attiladudas/backend/components/auth"
-	"attiladudas/backend/components/gallery"
-	"attiladudas/backend/components/room_manager"
-	"attiladudas/backend/ws"
+	"api"
+	"api/components/auth"
+	"api/components/gallery"
+	"api/components/room_manager"
+	"api/handlers/file_rank_patch"
+	"api/handlers/files_delete"
+	"api/handlers/files_post"
+	"api/handlers/galleries_get"
+	"api/handlers/gallery_delete"
+	"api/handlers/gallery_get"
+	"api/handlers/gallery_post"
+	"api/handlers/gallery_put"
+	"api/handlers/resize_get"
+	"api/handlers/token_post"
+	fiar "api/handlers/ws_five_in_a_row"
+	"db"
+	"flag"
 	"fmt"
-	"net/http"
-	"os"
 	"time"
 
-	"github.com/gorilla/websocket"
+	"github.com/gofiber/fiber/v2"
 )
 
 const retrySeconds = 3
 
-type wsUpgrader struct {
-	upgrader *websocket.Upgrader
-}
-
-func (u *wsUpgrader) Upgrade(
-	w http.ResponseWriter,
-	r *http.Request,
-	responseHeader http.Header,
-) (ws.IConn, error) {
-	return u.upgrader.Upgrade(w, r, responseHeader)
-}
-
 func main() {
-	pemPrivateKey := []byte(components.EnvPrivateKey.Load())
-	pemPublicKey := []byte(components.EnvPublicKey.Load())
+	port := flag.String("port", "8000", "-port 8000")
+	host := flag.String("host", "127.0.0.1", "-host 127.0.0.1")
+	flag.Parse()
+	app := createApp()
+	app.Listen(*host + ":" + *port)
+}
+
+func createApp() *fiber.App {
+	pemPrivateKey := []byte(api.EnvPrivateKey.Load())
+	pemPublicKey := []byte(api.EnvPublicKey.Load())
 
 	jwtContext, jwtErr := auth.NewJwtContext(pemPrivateKey, pemPublicKey)
 	if jwtErr != nil {
 		panic(jwtErr)
 	}
 
-	db, dbErr := components.NewDbFromEnv()
+	authCtx := auth.NewAuthContext(jwtContext)
+	session, dbErr := db.NewDbFromEnv()
 	for dbErr != nil {
 		fmt.Printf("Can't connect to db. Error: %v\nRetrying in %ds\n", dbErr, retrySeconds)
 		time.Sleep(retrySeconds * time.Second)
-		db, dbErr = components.NewDbFromEnv()
+		session, dbErr = db.NewDbFromEnv()
 	}
 
-	userStore := components.NewUserStore(db)
-	mediaDir := components.EnvMediaDir.Load()
-	galleryStore := gallery.NewGalleryStore(db, mediaDir)
-	fileStore := gallery.NewFileStore(db, mediaDir)
+	mediaDir := api.EnvMediaDir.Load()
+	galleryStore := gallery.NewGalleryStore(session, mediaDir)
+	fileStore := gallery.NewFileStore(session, mediaDir)
 	resizer := gallery.NewResizer(mediaDir)
-
-	upgrader := &wsUpgrader{
-		upgrader: &websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			},
-		},
-	}
-
 	roomManager := room_manager.NewRoomManager()
 	mediaDirName := fileStore.MediaDirName()
 
-	router := engine.NewEngine(
-		&auth.AuthContext{},
-		jwtContext,
-		&engine.HandlerCollection{
-			DeleteFilesHandler:     app_gallery.DeleteFilesHandler(fileStore, galleryStore),
-			DeleteGalleryHandler:   app_gallery.DeleteGalleryHandler(galleryStore),
-			FiveInARowHandler:      app_fiar.FiveInARowHandler(upgrader, roomManager),
-			GetGalleryHandler:      app_gallery.GetGalleryHandler(galleryStore, fileStore),
-			GetGalleriesHandler:    app_gallery.GetGalleriesHandler(galleryStore, fileStore, &auth.AuthContext{}, jwtContext),
-			GetResizedImageHandler: app_gallery.GetResizedImageHandler(resizer, mediaDirName),
-			PatchFileRankHandler:   app_gallery.PatchFileRankHandler(fileStore),
-			PostFilesHandler:       app_gallery.PostFilesHandler(fileStore, galleryStore),
-			PostGalleryHandler:     app_gallery.PostGalleryHandler(galleryStore),
-			PostTokenHandler:       app_auth.PostTokenHandler(userStore, jwtContext),
-			PutGalleryHandler:      app_gallery.PutGalleryHandler(galleryStore),
-		},
-		mediaDirName,
+	return api.AppWithMiddlewares(
+		file_rank_patch.PluginPatchFileRank(fileStore, authCtx),
+		files_delete.PluginDeleteFiles(authCtx, galleryStore, fileStore),
+		files_post.PluginPostFiles(authCtx, galleryStore, fileStore),
+		galleries_get.PluginGetGalleries(galleryStore, fileStore, authCtx),
+		gallery_delete.PluginDeleteGallery(authCtx, galleryStore),
+		gallery_get.PluginGetGallery(galleryStore, fileStore),
+		gallery_post.PluginPostGallery(authCtx, galleryStore),
+		gallery_put.PluginPutGallery(authCtx, galleryStore),
+		resize_get.PluginResizeImage(mediaDirName, resizer),
+		token_post.PluginTokenPost(session, jwtContext),
+		fiar.PluginFiveInARow(roomManager),
 	)
-
-	socketFile := components.EnvSocketPath.Load()
-	if socketFile == "" {
-		panic("Variable 'API_SOCKET_PATH' not set.")
-	}
-	os.Remove(socketFile)
-	router.RunUnix(socketFile)
 }

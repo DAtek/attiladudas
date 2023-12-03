@@ -1,11 +1,11 @@
-import {reactive} from "vue";
+import { reactive } from 'vue'
 
 export type GalleryTableState = {
-    loadGalleries: () => void
-    loadGalleriesOnOpenDetails: boolean
+  loadGalleries: () => void
+  loadGalleriesOnOpenDetails: boolean
 }
 
 export const galleryTableState = reactive<GalleryTableState>({
-    loadGalleries: () => {},
-    loadGalleriesOnOpenDetails: false,
+  loadGalleries: () => {},
+  loadGalleriesOnOpenDetails: false
 })

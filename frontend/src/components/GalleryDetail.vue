@@ -11,7 +11,10 @@
     >
       <a @click="() => show(image)">
         <figure class="image">
-          <img :src="createThumbnailSrc(image.path, 'MEDIUM')" :alt="image.filename">
+          <img
+            :src="createThumbnailSrc(image.path, 'MEDIUM')"
+            :alt="image.filename"
+          />
         </figure>
       </a>
     </div>
@@ -25,11 +28,11 @@
 </template>
 
 <script lang="ts" setup>
-import VueEasyLightbox from "vue-easy-lightbox"
-import type {File} from "@/utils/api_client";
-import type {Gallery} from "@/utils/api_client";
-import {createThumbnailSrc, formatGalleryDate} from "@/utils/gallery";
-import {reactive} from "vue";
+import VueEasyLightbox from 'vue-easy-lightbox'
+import type { File } from '@/utils/api_client'
+import type { Gallery } from '@/utils/api_client'
+import { createThumbnailSrc, formatGalleryDate } from '@/utils/gallery'
+import { reactive } from 'vue'
 
 type Props = {
   gallery: Gallery
@@ -46,7 +49,7 @@ type State = {
 const state = reactive<State>({
   lightboxVisible: false,
   thumbnailSources: [],
-  lightboxIndex: 0,
+  lightboxIndex: 0
 })
 
 function hideLightbox() {
@@ -60,7 +63,6 @@ function show(image: File) {
 }
 
 function calculateLightboxSources() {
-  state.thumbnailSources = props.gallery.files.map(file => file.path)
+  state.thumbnailSources = props.gallery.files.map((file) => file.path)
 }
-
 </script>

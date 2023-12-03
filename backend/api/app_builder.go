@@ -9,6 +9,8 @@ import (
 func AppWithMiddlewares(plugins ...fibertools.Plugin) *fiber.App {
 	allPlugins := []fibertools.Plugin{PluginMiddlewares()}
 	allPlugins = append(allPlugins, plugins...)
-
-	return fibertools.NewWithDefaultConfigApp(allPlugins...)
+	config := fiber.Config{
+		BodyLimit: 50 * 1024 * 1024,
+	}
+	return fibertools.NewApp(config, allPlugins...)
 }

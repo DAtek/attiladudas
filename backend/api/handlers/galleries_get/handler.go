@@ -3,7 +3,7 @@ package galleries_get
 import (
 	"api/components/auth"
 	"api/components/gallery"
-	"api/handlers/gallery_get"
+	"api/handlers/shared"
 	"fibertools"
 
 	"github.com/DAtek/gotils"
@@ -13,8 +13,8 @@ import (
 const path = "/api/galleries/"
 
 type GalleriesResponse struct {
-	Galleries []*gallery_get.GalleryResponse `json:"galleries"`
-	Total     uint                           `json:"total"`
+	Galleries []*shared.GalleryResponse `json:"galleries"`
+	Total     uint                      `json:"total"`
 }
 
 func PluginGetGalleries(
@@ -46,15 +46,20 @@ func getGalleries(
 		active = true
 	}
 
-	result := gotils.ResultOrPanic(galleryStore.GetGalleries(&gallery.GetGalleriesInput{
-		Active:   &active,
+	conditions := &gallery.GetGalleriesInput{
 		Page:     *params.Page,
 		PageSize: *params.PageSize,
-	}))
+	}
 
-	apiGalleries := []*gallery_get.GalleryResponse{}
+	if active {
+		conditions.SetActive(active)
+	}
+
+	result := gotils.ResultOrPanic(galleryStore.GetGalleries(conditions))
+
+	apiGalleries := []*shared.GalleryResponse{}
 	for _, gallery := range result.Items {
-		apiGalleries = append(apiGalleries, gallery_get.ConvertDbGalleryToApiGallery(gallery, fileStore))
+		apiGalleries = append(apiGalleries, shared.ConvertDbGalleryToApiGallery(gallery, fileStore))
 	}
 
 	response := &GalleriesResponse{Galleries: apiGalleries, Total: result.Total}

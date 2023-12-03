@@ -2,6 +2,7 @@ package gallery_get
 
 import (
 	"api/components/gallery"
+	"api/handlers/shared"
 	"fibertools"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,6 +37,6 @@ func getGallery(ctx *fiber.Ctx, galleryStore gallery.IGalleryStore, fileStore ga
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
-	respData := ConvertDbGalleryToApiGallery(gallery, fileStore)
+	respData := shared.ConvertDbGalleryToApiGallery(gallery, fileStore)
 	return ctx.JSON(respData)
 }

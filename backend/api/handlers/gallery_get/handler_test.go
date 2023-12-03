@@ -3,6 +3,7 @@ package gallery_get
 import (
 	"api"
 	"api/components/gallery"
+	"api/handlers/shared"
 	"api/helpers"
 	"bytes"
 	"db/models"
@@ -41,7 +42,7 @@ func TestGetGallery(t *testing.T) {
 			Active:      true,
 		}
 
-		filesResponse := []*File{
+		filesResponse := []*shared.File{
 			{
 				Id:       files[0].Id,
 				Filename: files[0].Filename,
@@ -49,7 +50,7 @@ func TestGetGallery(t *testing.T) {
 				Rank:     files[0].Rank,
 			},
 		}
-		wantedResponse := &GalleryResponse{
+		wantedResponse := &shared.GalleryResponse{
 			Id:          galleryObj.Id,
 			Title:       galleryObj.Title,
 			Slug:        galleryObj.Slug,
@@ -87,7 +88,7 @@ func TestGetGallery(t *testing.T) {
 		resp := gotils.ResultOrPanic(app.Test(req))
 
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
-		response := &GalleryResponse{}
+		response := &shared.GalleryResponse{}
 		respData := &bytes.Buffer{}
 		io.Copy(respData, resp.Body)
 		json.Unmarshal(respData.Bytes(), response)

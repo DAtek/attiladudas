@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import NavItem from "./NavItem.vue"
-import { getElementById } from "@/utils/dom"
+import { apiClient } from '@/utils/api_client';
+import NavItem from './NavItem.vue'
+import { getElementById } from '@/utils/dom'
+import { navbarState } from './navbar_state';
 
 function toggleMenu() {
-    getElementById('navbar-menu').classList.toggle('is-active')
-    getElementById('navbar-burger').classList.toggle('is-active')
+  getElementById('navbar-menu').classList.toggle('is-active')
+  getElementById('navbar-burger').classList.toggle('is-active')
 }
 </script>
 
@@ -25,6 +27,15 @@ function toggleMenu() {
               <NavItem path="/" title="About" />
               <NavItem path="/galleries/?page=1" active-path="/galleries" title="Galleries" />
               <NavItem path="/five-in-a-row/" title="Five in a row" />
+              <li
+                v-if="apiClient.token"
+                @click="() => {
+                  apiClient.logOut()
+                  navbarState.setPath('/')
+                }"
+              >
+                <router-link to="/">Log out</router-link>
+              </li>
             </ul>
           </div>
         </div>

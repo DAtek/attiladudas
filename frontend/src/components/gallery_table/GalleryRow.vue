@@ -1,7 +1,10 @@
 <template>
   <tr>
     <td>
-      <a v-if="gallery.files.length" @click="toggleDisplayDetails">
+      <a
+        v-if="gallery.files.length"
+        @click="toggleDisplayDetails"
+      >
         <i :class="dropdownClass"></i>
       </a>
       {{ gallery.id }}
@@ -9,59 +12,76 @@
     <td>{{ gallery.date }}</td>
     <td>{{ gallery.title }}</td>
     <td>{{ gallery.description }}</td>
-    <td>{{ gallery.active ? "True" : "False" }}</td>
+    <td>{{ gallery.active ? 'True' : 'False' }}</td>
     <td>{{ gallery.files.length }}</td>
     <td>
-      <button class="button is-danger mx-1 is-small" @click="openDeleteGalleryConfirmationModal">
+      <button
+        class="button is-danger mx-1 is-small"
+        @click="openDeleteGalleryConfirmationModal"
+      >
         <i class="fa fa-trash-alt fa-lg"></i>
       </button>
-      <button class="button is-warning is-small  mx-1" @click="openUpdateGalleryModal">
+      <button
+        class="button is-warning is-small mx-1"
+        @click="openUpdateGalleryModal"
+      >
         <i class="fa fa-pencil-alt fa-lg"></i>
       </button>
-      <button class="button is-success is-small  mx-1" @click="openFileUploadModal">
-        <i class="fa fa-plus fa-lg" style="margin-right: 0.25rem"></i>
+      <button
+        class="button is-success is-small mx-1"
+        @click="openFileUploadModal"
+      >
+        <i
+          class="fa fa-plus fa-lg"
+          style="margin-right: 0.25rem"
+        ></i>
         <i class="fa fa-file-alt fa-lg"></i>
       </button>
-       <button
-           class="button is-danger is-small mx-1"
-           @click="openDeleteFilesConfirmationModal"
-           :disabled="deleteFilesDisabled"
-       >
-        <i class="fa fa-trash-alt fa-lg" style="margin-right: 0.25rem"></i>
+      <button
+        class="button is-danger is-small mx-1"
+        @click="openDeleteFilesConfirmationModal"
+        :disabled="deleteFilesDisabled"
+      >
+        <i
+          class="fa fa-trash-alt fa-lg"
+          style="margin-right: 0.25rem"
+        ></i>
         <i class="fa fa-file-alt fa-lg"></i>
       </button>
     </td>
   </tr>
   <DetailRow
-      v-for="file of files" :key="file.id"
-      :file="file"
-      :gallery-id="gallery.id"
+    v-for="file of files"
+    :key="file.id"
+    :file="file"
+    :update-file-rank="(rank: number) => file.rank = rank"
+    :gallery-id="gallery.id"
   />
 </template>
 
 <script lang="ts" setup>
-import type {File, Gallery} from "@/utils/api_client"
-import {apiClient} from "@/utils/api_client";
-import type {Result} from "@/utils/api_client";
-import {computed, reactive} from "vue";
-import DetailRow from "@/components/gallery_table/DetailRow.vue";
-import {selectedFiles} from "@/components/gallery_table/selected_files";
-import {createUpdateGalleryFormState} from "@/components/create_update_gallery_form/state";
-import {fileUploadModalState} from "@/components/file_upload_modal/state";
-import {notificationCollection, NotificationItem} from "@/components/notification/notification";
-import {confirmationModalState} from "@/components/confirmation_modal/state";
-import {galleryTableState} from "@/components/gallery_table/state";
+import type { File, Gallery } from '@/utils/api_client'
+import { apiClient } from '@/utils/api_client'
+import type { Result } from '@/utils/api_client'
+import { computed, reactive } from 'vue'
+import DetailRow from '@/components/gallery_table/DetailRow.vue'
+import { selectedFiles } from '@/components/gallery_table/selected_files'
+import { createUpdateGalleryFormState } from '@/components/create_update_gallery_form/state'
+import { fileUploadModalState } from '@/components/file_upload_modal/state'
+import { notificationCollection, NotificationItem } from '@/components/notification/notification'
+import { confirmationModalState } from '@/components/confirmation_modal/state'
+import { galleryTableState } from '@/components/gallery_table/state'
 
 interface Props {
   gallery: Gallery
 }
 
 const state = reactive({
-  displayDetails: false,
+  displayDetails: false
 })
 
 const dropdownClass = computed(() => {
-  return state.displayDetails ? "fa fa-chevron-down" : "fa fa-chevron-right"
+  return state.displayDetails ? 'fa fa-chevron-down' : 'fa fa-chevron-right'
 })
 
 const props = defineProps<Props>()
@@ -88,17 +108,11 @@ async function deleteGallery() {
 
   if (result.error) {
     console.error(result.error)
-    notificationCollection.addItem(new NotificationItem(
-        "DANGER",
-        "Something unexpected happened."
-    ))
+    notificationCollection.addItem(new NotificationItem('DANGER', 'Something unexpected happened.'))
     return
   }
 
-  notificationCollection.addItem(new NotificationItem(
-      "SUCCESS",
-      "Gallery has been deleted."
-  ))
+  notificationCollection.addItem(new NotificationItem('SUCCESS', 'Gallery has been deleted.'))
   galleryTableState.loadGalleries()
   confirmationModalState.display = false
 }
@@ -106,21 +120,18 @@ async function deleteGallery() {
 async function deleteFiles() {
   let result: Result<null>
   const galleryId = props.gallery.id
-  result = await apiClient.deleteFiles({galleryId, fileIds: selectedFiles[galleryId]})
+  result = await apiClient.deleteFiles({
+    galleryId,
+    fileIds: selectedFiles[galleryId]
+  })
 
   if (result.error) {
     console.error(result.error)
-    notificationCollection.addItem(new NotificationItem(
-        "DANGER",
-        "Something unexpected happened."
-    ))
+    notificationCollection.addItem(new NotificationItem('DANGER', 'Something unexpected happened.'))
     return
   }
-  selectedFiles[galleryId] = [];
-  notificationCollection.addItem(new NotificationItem(
-      "SUCCESS",
-      "Selected files have been deleted."
-  ))
+  selectedFiles[galleryId] = []
+  notificationCollection.addItem(new NotificationItem('SUCCESS', 'Selected files have been deleted.'))
   galleryTableState.loadGalleries()
   confirmationModalState.display = false
 }
@@ -133,7 +144,7 @@ function openDeleteGalleryConfirmationModal() {
 
 function openDeleteFilesConfirmationModal() {
   confirmationModalState.onConfirm = deleteFiles
-  confirmationModalState.question = "Are you sure you want to delete the selected files?"
+  confirmationModalState.question = 'Are you sure you want to delete the selected files?'
   confirmationModalState.display = true
 }
 
@@ -146,5 +157,4 @@ function openFileUploadModal() {
   fileUploadModalState.galleryId = props.gallery.id
   fileUploadModalState.display = true
 }
-
 </script>
