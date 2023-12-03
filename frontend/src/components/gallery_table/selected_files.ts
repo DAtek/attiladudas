@@ -1,7 +1,7 @@
-import {reactive} from "vue";
+import { reactive } from 'vue'
 
 type SelectedFiled = {
-    [galleryId: number]: number[]
+  [galleryId: number]: number[]
 }
 
-export const selectedFiles = reactive<SelectedFiled>({0: []})
+export const selectedFiles = reactive<SelectedFiled>({ 0: [] })

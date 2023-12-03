@@ -6,11 +6,23 @@
           <div class="control">
             <span class="mr-4">Pick side:</span>
             <label class="radio mr-2">
-              <input value="X" @click="pickSide" type="radio" name="side" :disabled="sidePickingDisabled">
+              <input
+                value="X"
+                @click="pickSide"
+                type="radio"
+                name="side"
+                :disabled="sidePickingDisabled"
+              />
               X
             </label>
             <label class="radio mr-2">
-              <input value="O" @click="pickSide" type="radio" name="side" :disabled="sidePickingDisabled">
+              <input
+                value="O"
+                @click="pickSide"
+                type="radio"
+                name="side"
+                :disabled="sidePickingDisabled"
+              />
               O
             </label>
           </div>
@@ -18,11 +30,17 @@
       </div>
     </div>
   </div>
-  <div v-if="fiveInARowState.game.currentPlayer && !fiveInARowState.game.winner" class="columns is-centered is-mobile">
-    <p>{{fiveInARowState.game.currentPlayer}} is next</p>
+  <div
+    v-if="fiveInARowState.game.currentPlayer && !fiveInARowState.game.winner"
+    class="columns is-centered is-mobile"
+  >
+    <p>{{ fiveInARowState.game.currentPlayer }} is next</p>
   </div>
   <div class="columns is-centered is-mobile has-text-left">
-    <div class="column" :style="messageColumnStyle">
+    <div
+      class="column"
+      :style="messageColumnStyle"
+    >
       <form @submit="sendMessage">
         <div class="field has-addons">
           <div class="control is-expanded">
@@ -33,7 +51,10 @@
             />
           </div>
           <div class="control">
-            <button type="submit" class="button is-info">
+            <button
+              type="submit"
+              class="button is-info"
+            >
               <i class="fa fa-envelope"></i>
             </button>
           </div>
@@ -41,37 +62,35 @@
       </form>
     </div>
   </div>
-  <SquaresComponent/>
+  <SquaresComponent />
 </template>
 
 <script lang="ts" setup>
-
-import {computed, reactive} from "vue";
-import {fiveInARowState} from "@/views/five_in_a_row/state";
-import type {WSError} from "@/utils/websocket";
-import {getErrorMessage, getErrorsForField} from "@/utils/errors";
-import {notificationCollection, NotificationItem} from "@/components/notification/notification";
-import {squareStyle} from "@/components/five_in_a_row/dynamic_style";
-import InputField from "@/components/InputField.vue";
-import SquaresComponent from "@/components/five_in_a_row/SquaresComponent.vue";
+import { computed, reactive } from 'vue'
+import { fiveInARowState } from '@/views/five_in_a_row/state'
+import type { WSError } from '@/utils/websocket'
+import { getErrorMessage, getErrorsForField } from '@/utils/errors'
+import { notificationCollection, NotificationItem } from '@/components/notification/notification'
+import { squareStyle } from '@/components/five_in_a_row/dynamic_style'
+import InputField from '@/components/InputField.vue'
+import SquaresComponent from '@/components/five_in_a_row/SquaresComponent.vue'
 
 const TABLE_SIZE = 11
 
 const sides = {
-  X: "X",
-  O: "O",
+  X: 'X',
+  O: 'O'
 }
 
 type Side = keyof typeof sides
 
 type Data = {
-  side?: Side,
+  side?: Side
   message: string
-
 }
 
 const data = reactive<Data>({
-  message: "",
+  message: ''
 })
 
 async function pickSide(ev: Event) {
@@ -80,14 +99,12 @@ async function pickSide(ev: Event) {
 
   try {
     await fiveInARowState.webSocketClient?.pickSide({
-        side: data.side,
-      }
-    )
+      side: data.side
+    })
   } catch (e) {
     handleError(String(e))
     target.checked = false
   }
-
 }
 
 const sidePickingDisabled = computed<boolean>(() => {
@@ -96,16 +113,10 @@ const sidePickingDisabled = computed<boolean>(() => {
 
 function handleError(e: string) {
   const wsError = JSON.parse(e) as WSError
-  const sideErrors = getErrorsForField("side", wsError.errors)
+  const sideErrors = getErrorsForField('side', wsError.errors)
 
-  if (
-    sideErrors.length
-    && [
-      "BOTH_PLAYERS_MUST_JOIN",
-      "SIDE_ALREADY_TAKEN",
-    ].includes(sideErrors[0].type)
-  ) {
-    notificationCollection.addItem(new NotificationItem("DANGER", getErrorMessage(sideErrors[0])))
+  if (sideErrors.length && ['BOTH_PLAYERS_MUST_JOIN', 'SIDE_ALREADY_TAKEN'].includes(sideErrors[0].type)) {
+    notificationCollection.addItem(new NotificationItem('DANGER', getErrorMessage(sideErrors[0])))
     return
   }
 
@@ -113,13 +124,12 @@ function handleError(e: string) {
 }
 
 const messageColumnStyle = computed<string>(() => {
-  return `flex: none; width: ${TABLE_SIZE * (squareStyle.squareSize + 1) + 2}px;`;
+  return `flex: none; width: ${TABLE_SIZE * (squareStyle.squareSize + 1) + 2}px;`
 })
 
 function sendMessage(ev: Event) {
   ev.preventDefault()
   fiveInARowState.webSocketClient?.sendMessage(data.message)
-  data.message = ""
+  data.message = ''
 }
-
 </script>

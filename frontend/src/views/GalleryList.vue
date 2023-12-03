@@ -16,12 +16,12 @@
 </template>
 
 <script lang="ts" setup>
-import GalleryPreview from "@/components/GalleryPreview.vue";
-import type {Gallery} from "@/utils/api_client";
-import {apiClient} from "@/utils/api_client";
-import {computed, onMounted, reactive} from "vue";
-import PaginationComponent from "@/components/PaginationComponent.vue";
-import {router} from "@/utils/router";
+import GalleryPreview from '@/components/GalleryPreview.vue'
+import type { Gallery } from '@/utils/api_client'
+import { apiClient } from '@/utils/api_client'
+import { computed, onMounted, reactive } from 'vue'
+import PaginationComponent from '@/components/PaginationComponent.vue'
+import { router } from '@/utils/router'
 
 const PAGE_SIZE = 2
 
@@ -34,13 +34,13 @@ type State = {
 const state = reactive<State>({
   galleries: [],
   currentPage: 1,
-  total: 0,
+  total: 0
 })
 
 onMounted(() => {
   const currentPath = window.history.state.current
   const url = new URL(`http://local.com${currentPath}`)
-  const pageParam = url.searchParams.get("page")
+  const pageParam = url.searchParams.get('page')
   if (pageParam) {
     state.currentPage = Number(pageParam)
   }
@@ -62,7 +62,10 @@ const hasPreviousPage = computed<boolean>(() => {
 })
 
 async function loadGalleries() {
-  const result = await apiClient.getGalleries({page: state.currentPage, page_size: 2})
+  const result = await apiClient.getGalleries({
+    page: state.currentPage,
+    page_size: 2
+  })
 
   if (result.result) {
     state.galleries = result.result.galleries

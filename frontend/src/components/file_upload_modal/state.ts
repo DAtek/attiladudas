@@ -1,11 +1,11 @@
-import {reactive} from "vue";
+import { reactive } from 'vue'
 
 export type FileUploadModalState = {
-    display: boolean
-    galleryId: number
+  display: boolean
+  galleryId: number
 }
 
 export const fileUploadModalState = reactive<FileUploadModalState>({
-    display: false,
-    galleryId: 0,
+  display: false,
+  galleryId: 0
 })

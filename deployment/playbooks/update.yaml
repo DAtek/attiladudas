@@ -5,12 +5,12 @@
     service: "{{ app_name }}.service"
     base_dir: "/opt/{{ app_name }}"
     frontend_dir: "{{ base_dir }}/frontend"
-    exec_start: "{{ base_dir }}/backend/server"
     starter_script: "{{ base_dir }}/run_server.sh"
     static_dir: "{{ base_dir }}/frontend/static"
     assets_dir: "{{ base_dir }}/frontend/assets"
     media_dir: "{{ base_dir }}/media"
     server_socket_path: "/var/run/{{ app_name }}/server.sock"
+    exec_start: "{{ base_dir }}/backend/run-server -socket {{ server_socket_path }}"
     environment_file: "/opt/{{ app_name }}/env"
 
     # you need to generate these keys manually
@@ -19,8 +19,7 @@
 
     environ_:
       API_MEDIA_DIR: "{{ media_dir }}"
-      API_SOCKET_PATH: "{{ server_socket_path }}"
-      API_MIGRATIONS_DIR: "/opt/{{ app_name }}/backend/migrations"
+      MIGRATIONS_DIR: "/opt/{{ app_name }}/backend/migrations"
 
     # logging
     logrotate_preserve_amount: 4

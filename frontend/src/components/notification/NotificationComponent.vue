@@ -1,46 +1,45 @@
 <template>
-    <div
-        v-for="(item, index) in notificationCollection.items"
-        :key="index"
-        :class="item.classes.join(' ')"
-        :style="item.styleString"
-    >
-        {{ item.message }}
-    </div>
+  <div
+    v-for="(item, index) in notificationCollection.items"
+    :key="index"
+    :class="item.classes.join(' ')"
+    :style="item.styleString"
+  >
+    {{ item.message }}
+  </div>
 </template>
 
 <script lang="ts" setup>
-import {notificationCollection} from "@/components/notification/notification";
+import { notificationCollection } from '@/components/notification/notification'
 </script>
 
 <style scoped>
-
 .notification.top {
-    z-index: 100;
+  z-index: 100;
 }
 
 .notification.mobile {
-    position: absolute;
-    width: 100%;
-    left: 0;
+  position: absolute;
+  width: 100%;
+  left: 0;
 }
 
 .notification.desktop {
-    position: absolute;
-    width: 25%;
-    left: 70%;
+  position: absolute;
+  width: 25%;
+  left: 70%;
 }
 
 .fade-out {
-    animation: fadeOut ease 0.5s;
+  animation: fadeOut ease 0.5s;
 }
 
 @keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>

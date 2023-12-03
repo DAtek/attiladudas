@@ -10,14 +10,20 @@
         @input="onInput"
       />
     </div>
-    <p v-for="error of errors_" :key="`${error.location}:${error.type}`" class="help is-danger">{{ getErrorMessage(error) }}</p>
+    <p
+      v-for="error of errors_"
+      :key="`${error.location}:${error.type}`"
+      class="help is-danger"
+    >
+      {{ getErrorMessage(error) }}
+    </p>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type {FieldError} from "@/utils/api_client"
-import {getErrorMessage} from "@/utils/errors";
-import {computed} from "vue";
+import type { FieldError } from '@/utils/api_client'
+import { getErrorMessage } from '@/utils/errors'
+import { computed } from 'vue'
 
 type Props = {
   errors?: FieldError[]
@@ -28,7 +34,7 @@ type Props = {
 }
 const props = defineProps<Props>()
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(['update:modelValue'])
 
 const errors_ = computed<FieldError[]>(() => {
   return props.errors ? props.errors : []
@@ -36,7 +42,6 @@ const errors_ = computed<FieldError[]>(() => {
 
 function onInput(ev: Event) {
   const target = ev.target as HTMLInputElement
-  emit("update:modelValue", target.value)
+  emit('update:modelValue', target.value)
 }
-
 </script>

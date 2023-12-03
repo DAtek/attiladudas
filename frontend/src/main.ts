@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { router } from './utils/router'
-import './scss/styles.scss';
-import '@fortawesome/fontawesome-free/css/all.css';
+import './scss/styles.scss'
+import '@fortawesome/fontawesome-free/css/all.css'
 
 const app = createApp(App)
 

@@ -1,5 +1,9 @@
 <template>
-  <button :style="buttonStyle" class="square" @click="move">
+  <button
+    :style="buttonStyle"
+    class="square"
+    @click="move"
+  >
     <div :style="divStyle">
       {{ value }}
     </div>
@@ -7,13 +11,12 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { fiveInARowState } from '@/views/five_in_a_row/state'
+import { squareStyle } from '@/components/five_in_a_row/dynamic_style'
+import { notificationCollection, NotificationItem } from '@/components/notification/notification'
 
-import {computed} from "vue";
-import {fiveInARowState} from "@/views/five_in_a_row/state";
-import {squareStyle} from "@/components/five_in_a_row/dynamic_style";
-import {notificationCollection, NotificationItem} from "@/components/notification/notification";
-
-const EMPTY_VALUE = "A"
+const EMPTY_VALUE = 'A'
 
 type Props = {
   x: number
@@ -28,8 +31,8 @@ type ValueMap = {
 
 const valueMap: ValueMap = {
   0: EMPTY_VALUE,
-  1: "X",
-  2: "O",
+  1: 'X',
+  2: 'O'
 }
 
 const value = computed<string>(() => {
@@ -38,43 +41,44 @@ const value = computed<string>(() => {
   return valueMap[rawValue]
 })
 
-const divStyle = computed<string>(() => value.value === EMPTY_VALUE ? "opacity: 0;" : "")
+const divStyle = computed<string>(() => (value.value === EMPTY_VALUE ? 'opacity: 0;' : ''))
 
 const buttonStyle = computed(() => {
   return [
     `width: ${squareStyle.squareSize}px`,
     `height: ${squareStyle.squareSize}px`,
     `font-size: ${squareStyle.fontSize}px`
-  ].join(';');
+  ].join(';')
 })
 
 async function move() {
   try {
-    await fiveInARowState.webSocketClient?.move({position: [props.x, props.y]})
+    await fiveInARowState.webSocketClient?.move({
+      position: [props.x, props.y]
+    })
   } catch (e) {
     handleError(String(e))
   }
 }
 
 function handleError(error: string) {
-  if (error === "INVALID_POSITION") {
-    notificationCollection.addItem(new NotificationItem("DANGER", "Invalid position"))
+  if (error === 'INVALID_POSITION') {
+    notificationCollection.addItem(new NotificationItem('DANGER', 'Invalid position'))
     return
   }
 
-  if (error === "NOT_YOUR_TURN") {
-    notificationCollection.addItem(new NotificationItem("DANGER", "Not your turn"))
+  if (error === 'NOT_YOUR_TURN') {
+    notificationCollection.addItem(new NotificationItem('DANGER', 'Not your turn'))
     return
   }
 
-  if (error === "GAME_ALREADY_ENDED") {
-    notificationCollection.addItem(new NotificationItem("DANGER", "Game is over"))
+  if (error === 'GAME_ALREADY_ENDED') {
+    notificationCollection.addItem(new NotificationItem('DANGER', 'Game is over'))
     return
   }
 
   throw error
 }
-
 </script>
 
 <style scoped>
