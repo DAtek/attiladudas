@@ -1,3 +1,0 @@
-- BE: Implement five in a row
-- FE: Implement five in a row
-- BE: Add ansible playbook for updating the frontend & backend
