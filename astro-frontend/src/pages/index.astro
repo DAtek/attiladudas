@@ -1,47 +1,30 @@
 ---
-import BaseHead from "../components/BaseHead.astro"
 import { Image } from "astro:assets"
-import Header from "../components/Header.astro"
-import Footer from "../components/Footer.astro"
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts"
 import profileImage from "../images/profile.jpg"
+import MainLayout from "../layouts/MainLayout.astro"
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  </head>
-  <body>
-    <Header />
-    <main class="w-3/4 mt-10">
-      <div class="flex justify-center">
-        <div>
-          <Image
-            class="rounded-full size-80"
-            src={profileImage}
-            alt="profile"
-          />
-        </div>
-        <div class="ml-10 content-center">
-          <div class="">
-            <h1>Hi, I'm Attila Dudás</h1>
-            <p>a backend engineer.</p>
-          </div>
-          <div class="pt-5">
-            <p>
-              My passion is building <strong>robust</strong>, <strong
-                >scalable</strong
-              >, <strong>maintainable</strong> software.
-            </p>
-            <p>
-              Bugs are crucial part of the ecosystem, but should not be part of
-              any software!
-            </p>
-          </div>
-        </div>
+<MainLayout>
+  <div class="flex justify-center">
+    <div>
+      <Image class="rounded-full size-80" src={profileImage} alt="profile" />
+    </div>
+    <div class="ml-10 content-center">
+      <div class="">
+        <h1>Hi, I'm Attila Dudás</h1>
+        <p>a backend engineer.</p>
       </div>
-    </main>
-    <Footer />
-  </body>
-</html>
+      <div class="pt-5">
+        <p>
+          My passion is building <strong>robust</strong>, <strong
+            >scalable</strong
+          >, <strong>maintainable</strong> software.
+        </p>
+        <p>
+          Bugs are crucial part of the ecosystem, but should not be part of any
+          software!
+        </p>
+      </div>
+    </div>
+  </div>
+</MainLayout>
