@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types"
 
 type Props = HTMLAttributes<"a">
 
-const { href, class: className, ...props } = Astro.props
+const { href, ...props } = Astro.props
 
 const { pathname } = Astro.url
 const subpath = pathname.match(/[^\/]+/g)
@@ -13,9 +13,9 @@ const isActive = href === pathname || href === "/" + subpath?.[0]
 <a
   href={href}
   class:list={[
-    className,
-    { active: isActive },
+    { "border-b-active": isActive },
     "mx-4",
+    "hover:text-active",
     "text-black",
     "border-b-2",
     "border-transparent",
@@ -24,9 +24,3 @@ const isActive = href === pathname || href === "/" + subpath?.[0]
 >
   <slot />
 </a>
-
-<style>
-  .active {
-    border-bottom-color: var(--accent);
-  }
-</style>

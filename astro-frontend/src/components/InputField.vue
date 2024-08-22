@@ -30,7 +30,7 @@
       @input="onInput"
     />
     <p
-      class="text-center text-sm text-red-400 lg:text-left mt-1"
+      class="text-center text-sm text-danger lg:text-left mt-1"
       v-for="error of errors_"
       :key="`${error.location}:${error.type}`"
     >
@@ -62,8 +62,8 @@ const errors_ = computed<FieldError[]>(() => {
 
 const inputColorClasses = computed<string[]>(() => {
   return errors_.value.length
-    ? ["focus:border-red-600", "focus:ring-red-600", "border-red-600"]
-    : ["focus:border-blue-500", "focus:ring-blue-500", "border-gray-300"]
+    ? ["focus:border-danger", "focus:ring-danger", "border-danger"]
+    : ["focus:border-primary", "focus:ring-primary", "border-gray-300"]
 })
 
 function onInput(ev: Event) {

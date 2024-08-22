@@ -20,8 +20,8 @@ import { notificationCollection } from "@/components/notification/notification"
 
 .notification.mobile {
   position: absolute;
-  width: 100%;
-  left: 0;
+  width: 70%;
+  left: 15%;
 }
 
 .notification.desktop {

@@ -14,10 +14,7 @@ COPY fiber-tools/ fiber-tools/
 RUN go build ./cmd/run-server
 
 
-FROM ubuntu:jammy
+FROM ubuntu:noble
 SHELL [ "/bin/bash", "-c" ]
-# must match with nginx's user, see https://hub.docker.com/_/nginx/
-RUN addgroup --gid 101 backendgroup
-RUN useradd -u 101 -g backendgroup backend
 WORKDIR /app
 COPY --from=build /project/run-server .
