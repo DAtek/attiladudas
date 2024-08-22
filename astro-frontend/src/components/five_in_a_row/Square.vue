@@ -8,12 +8,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue"
-import { fiveInARowState } from "@/views/five_in_a_row/state"
 import { squareStyle } from "@/components/five_in_a_row/dynamic_style"
 import {
   notificationCollection,
   NotificationItem,
 } from "@/components/notification/notification"
+import { fiveInARowState } from "./state"
 
 const EMPTY_VALUE = "A"
 
@@ -62,29 +62,18 @@ async function move() {
   }
 }
 
+const errorMessages: Record<string, string> = {
+  INVALID_POSITION: "Invalid position",
+  NOT_YOUR_TURN: "Not your turn",
+  GAME_ALREADY_ENDED: "Game is over",
+  NO_ROOM: "You need to pick a side first",
+}
+
 function handleError(error: string) {
-  if (error === "INVALID_POSITION") {
-    notificationCollection.addItem(
-      new NotificationItem("DANGER", "Invalid position"),
-    )
-    return
-  }
+  const errorMsg = errorMessages[error]
+  if (!errorMsg) throw error
 
-  if (error === "NOT_YOUR_TURN") {
-    notificationCollection.addItem(
-      new NotificationItem("DANGER", "Not your turn"),
-    )
-    return
-  }
-
-  if (error === "GAME_ALREADY_ENDED") {
-    notificationCollection.addItem(
-      new NotificationItem("DANGER", "Game is over"),
-    )
-    return
-  }
-
-  throw error
+  notificationCollection.addItem(new NotificationItem("DANGER", errorMsg))
 }
 </script>
 

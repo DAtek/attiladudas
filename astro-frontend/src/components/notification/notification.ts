@@ -1,13 +1,12 @@
-import { getWidth, TOUCH_WIDTH } from "@/utils/common"
+import { getWidth, TOUCH_WIDTH } from "@/utils/browser"
 import { computed, reactive, type ComputedRef } from "vue"
 
 const TOP_INCREMENT = 5
 const MIN_TIMEOUT_SECONDS = 3
 
 export const notificationTypeClassMap = {
-  SUCCESS: "is-success",
-  DANGER: "is-danger",
-  INFO: "is-info",
+  DANGER: "bg-red-400",
+  INFO: "bg-blue-400",
 }
 
 export type NotificationType = keyof typeof notificationTypeClassMap
@@ -46,6 +45,10 @@ export class NotificationItem {
       "notification",
       "top",
       browserWidth > TOUCH_WIDTH ? "desktop" : "mobile",
+      "text-white",
+      "py-5",
+      "my-3",
+      "rounded-lg",
     ])
 
     this.top = reactive({ value: browserWidth > TOUCH_WIDTH ? 5 : 0 })

@@ -1,16 +1,12 @@
 import { reactive } from "vue"
-import { getHeight, getWidth } from "@/utils/common"
+import { getHeight, getWidth } from "@/utils/browser"
 
 class SquareStyle {
   public resize = () => {}
   public squareSize = 10
   public fontSize = 12
   protected minHeight = 680
-  protected minWidth: number
-
-  constructor() {
-    this.minWidth = getWidth() > 768 ? 900 : 650
-  }
+  protected minWidth = 650
 
   resizeByWidth() {
     this.squareSize = Math.round((30 * getWidth()) / this.minWidth)
@@ -45,8 +41,3 @@ class SquareStyle {
 }
 
 export const squareStyle = reactive(new SquareStyle())
-
-window.addEventListener("resize", () => {
-  squareStyle.setResize()
-  squareStyle.resize()
-})

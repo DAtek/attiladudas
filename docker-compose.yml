@@ -1,17 +1,4 @@
-version: '3.9'
-
 services:
-  nginx:
-    image: nginx
-    volumes:
-      - "./nginx/attiladudas_dev.conf:/etc/nginx/conf.d/default.conf:ro"
-      - "./.tmp/media:/media"
-    ports:
-      - "${APP_PORT-8000}:80"
-    environment:
-      - NGINX_PORT=80
-    restart: on-failure
-  
   backend:
     image: attiladudas/backend:latest
     user: backend
@@ -31,21 +18,23 @@ services:
     volumes:
       - "./.tmp/media:/media"
     ports:
-      - "${BACKEND_PORT-8080}:80"
+      - "127.0.0.1:${BACKEND_PORT-8080}:80"
     depends_on:
       - db
 
   frontend:
     image: frontend
-    build: ./frontend
-    working_dir: /frontend
+    build: ./astro-frontend
+    working_dir: /astro-frontend
     command: >
       bash -c "pnpm install
-      && pnpm run dev"
+      && pnpm dev"
+    environment:
+      - PUBLIC_DATEK_WS_URL=ws://127.0.0.1:${BACKEND_PORT-8080}
     ports:
-      - "${FRONTEND_PORT-5173}:5173"
+      - "127.0.0.1:${FRONTEND_PORT-4321}:4321"
     volumes:
-      - "./frontend:/frontend"
+      - "./astro-frontend:/astro-frontend"
 
   db:
     image: postgres:14
@@ -54,6 +43,4 @@ services:
       - POSTGRES_USER
       - POSTGRES_DB
     ports:
-      - "${POSTGRES_PORT}:5432"
-    volumes:
-      - db
+      - "127.0.0.1:${POSTGRES_PORT}:5432"

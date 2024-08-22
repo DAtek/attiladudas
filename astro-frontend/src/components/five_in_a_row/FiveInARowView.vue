@@ -1,5 +1,5 @@
 <template>
-  <h1 class="title">Five in a row</h1>
+  <h1>Five in a row</h1>
   <JoinRoom v-if="!fiveInARowState.room && !fiveInARowState.player" />
   <GameBoard v-else />
 </template>

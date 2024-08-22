@@ -3,6 +3,7 @@ import {
   NotificationItem,
 } from "@/components/notification/notification"
 import type { FieldError } from "./errors"
+import { PUBLIC_DATEK_WS_URL } from "./config"
 
 export type WSError = {
   errors: FieldError[]
@@ -14,11 +15,7 @@ export class WebSocketClient {
   protected _reject?: (reason: any) => void
 
   constructor(protected _setGame: (game: UpdateGameData) => void) {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
-    this._webSocket = new WebSocket(
-      `${protocol}//${window.location.host}/ws/five-in-a-row/`,
-    )
-
+    this._webSocket = new WebSocket(`${PUBLIC_DATEK_WS_URL}/ws/five-in-a-row/`)
     this._webSocket.onmessage = (ev) => this.handleMessage(ev)
     this._webSocket.onerror = (ev) => {
       console.error(ev)
@@ -55,7 +52,6 @@ export class WebSocketClient {
     await new Promise<void>((resolve, reject) => {
       this._resolve = resolve
       this._reject = reject
-
       const data: Message = {
         type: "PICK_SIDE",
         data: JSON.stringify(pickSideData),

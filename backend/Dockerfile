@@ -1,4 +1,4 @@
-FROM golang:1.21 as deps
+FROM golang:1.22 AS deps
 WORKDIR /project
 COPY api/go.mod api/go.sum api/
 COPY db/go.mod db/go.sum db/
@@ -8,7 +8,7 @@ COPY go.work .
 RUN go mod download
 
 
-FROM deps as build
+FROM deps AS build
 COPY api/ api/
 COPY cmd/ cmd/
 COPY db/ db/

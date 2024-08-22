@@ -1,10 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro"
-import GameBoard from "../components/five_in_a_row/GameBoard.vue"
+import FiveInARowView from "@/components/five_in_a_row/FiveInARowView.vue"
 ---
 
-<MainLayout>
-  <div class="flex justify-center">
-    <GameBoard client:load />
-  </div>
+<MainLayout class:list={["flex", "flex-col", "text-center"]}>
+  <FiveInARowView client:load />
 </MainLayout>
