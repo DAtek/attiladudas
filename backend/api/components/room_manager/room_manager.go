@@ -24,3 +24,5 @@ type roomManager struct {
 	actions           actionCollection
 	cleanup_          func(conn IWSConn)
 }
+
+var _ IRoomManager = &MockRoomManager{}

@@ -1,35 +1,13 @@
 pgks := "\
-./api/components/auth \
 ./api/components/five_in_a_row \
-./api/components/gallery \
 ./api/components/room_manager \
-./api/components/user \
-./api/handlers/file_rank_patch \
-./api/handlers/files_delete \
-./api/handlers/files_post \
-./api/handlers/galleries_get \
-./api/handlers/gallery_delete \
-./api/handlers/gallery_get \
-./api/handlers/gallery_post \
-./api/handlers/gallery_put \
-./api/handlers/resize_get \
-./api/handlers/token_post \
-./api/handlers/ws_five_in_a_row
+./api/handlers/ws_five_in_a_row 
 "
 coverfile := ".coverage"
 
 
 run-integration-services *args:
     docker compose up {{ args }}
-
-
-migrate *args:
-    go run ./cmd/migrate/ {{ args }}
-
-
-generate-keypair output_dir:
-    openssl genpkey -algorithm ed25519 -out {{ output_dir }}/private.pem
-    openssl pkey -in {{ output_dir }}/private.pem -pubout -out {{ output_dir }}/public.pem
 
 
 test *args:
@@ -46,16 +24,12 @@ show-coverage:
     go tool cover -html {{ coverfile }}
 
 
-create-user *args: 
-    go run ./cmd/create-user {{ args }}
-
-
 tidy:
     #!/bin/bash
 
     rm -f go.work.sum
 
-    for module in api fiber-tools db cmd
+    for module in api fiber-tools cmd
     do
         just tidy-module ${module} &
     done
