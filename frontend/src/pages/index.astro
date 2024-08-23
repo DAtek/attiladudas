@@ -1,0 +1,40 @@
+---
+import { Image } from "astro:assets"
+import profileImage from "../images/profile.jpg"
+import MainLayout from "../layouts/MainLayout.astro"
+---
+
+<MainLayout
+  title="Attila Dudás, fullstack developer"
+  description="The landing page of Attilas site"
+  class:list={["flex", "justify-center", "items-center"]}
+>
+  <div class="xl:flex">
+    <div class="xl:block flex justify-center">
+      <Image
+        class="rounded-full size-60 xl:size-80"
+        src={profileImage}
+        alt="profile"
+      />
+    </div>
+    <div
+      class="xl:ml-10 xl:content-center xl:block xl:text-left flex flex-col text-center"
+    >
+      <div>
+        <h1>Hi, I'm Attila Dudás</h1>
+        <p>a fullstack (fools-tech) developer.</p>
+      </div>
+      <div class="pt-5">
+        <p class="mb-0">
+          My passion is building <strong>robust</strong>, <strong
+            >scalable</strong
+          >, <strong>maintainable</strong> software.
+        </p>
+        <p>
+          Bugs are crucial part of the ecosystem, but should not be part of any
+          software!
+        </p>
+      </div>
+    </div>
+  </div>
+</MainLayout>

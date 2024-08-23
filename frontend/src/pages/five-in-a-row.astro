@@ -1,0 +1,12 @@
+---
+import MainLayout from "../layouts/MainLayout.astro"
+import FiveInARowView from "@/components/five_in_a_row/FiveInARowView.vue"
+---
+
+<MainLayout
+  title="Five in a row"
+  description="Five in a row online game"
+  class:list={["flex", "flex-col", "text-center", "flex-grow"]}
+>
+  <FiveInARowView client:load />
+</MainLayout>

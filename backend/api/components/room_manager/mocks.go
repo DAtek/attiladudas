@@ -27,3 +27,5 @@ func (m *MockChanConn) WriteMessage(messageType int, data []byte) error {
 	m.WriteChan <- MockMessage{messageType, data, nil}
 	return nil
 }
+
+var _ IWSConn = NewMockChanConn()

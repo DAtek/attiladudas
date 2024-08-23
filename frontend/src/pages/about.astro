@@ -1,0 +1,49 @@
+---
+import MainLayout from "../layouts/MainLayout.astro"
+---
+
+<MainLayout
+  title="About"
+  description="Short summary of Attila Dudás"
+  class:list={["flex", "flex-grow", "justify-center", "2xl:w-1/2"]}
+>
+  <div>
+    <h1 class="text-center">About</h1>
+    <p class="text-center">Welcome to my site!</p>
+    <div class="default-line-height">
+      <p>
+        I enjoy tippy-tapping (some call it writing code or software
+        development), for me it's a mixture of <i>engineering</i> and <i>art</i
+        >. I can say <i>engineering</i>, because I'm using various metrics and
+        measurements and I'm trying to ignore most subjective aspects.
+      </p>
+    </div>
+    <div class="default-line-height">
+      <p>
+        When all metrics are good and the code is pleasant for my eyes (oh no,
+        here's a subjective aspect), then I know, I did a good job.
+      </p>
+      <p>
+        And of course if the software behaves according to to the requirements.
+      </p>
+    </div>
+    <div class="default-line-height">
+      <p>
+        My CV is downloadable <a
+          href="/CV_Attila_Dudas.md"
+          download="CV_Attila_Dudas.md">here</a
+        >.
+      </p>
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  div.default-line-height p {
+    margin-bottom: 0.25em;
+  }
+
+  div.default-line-height {
+    margin-bottom: 1em;
+  }
+</style>
