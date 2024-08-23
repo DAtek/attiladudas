@@ -42,13 +42,7 @@ export class NotificationItem {
     this.message = message
     this.classes = reactive([
       notificationTypeClassMap[type],
-      "notification",
-      "top",
       browserWidth > TOUCH_WIDTH ? "desktop" : "mobile",
-      "text-white",
-      "py-5",
-      "my-3",
-      "rounded-lg",
     ])
 
     this.top = reactive({ value: browserWidth > TOUCH_WIDTH ? 5 : 0 })

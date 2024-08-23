@@ -1,0 +1,38 @@
+---
+import MainLayout from "../layouts/MainLayout.astro"
+---
+
+<MainLayout class:list={["flex", "flex-grow", "justify-center", "2xl:w-1/2"]}>
+  <div>
+    <h1 class="text-center">About</h1>
+    <p class="text-center">Welcome to my site!</p>
+    <div class="default-line-height">
+      <p>
+        I enjoy tippy-tapping (some call it writing code or software
+        development), for me it's a mixture of <i>engineering</i> and <i>art</i
+        >. I can say <i>engineering</i>, because I'm using various metrics and
+        measurements and I'm trying to ignore most subjective aspects.
+      </p>
+      <p>
+        I can only be satisfied with my work if all metrics are telling it's
+        good and if it's pleasant for my eyes (oh no, here's a subjective
+        aspect).
+      </p>
+      <p>And of course if it behaves according to to the requirements.</p>
+    </div>
+    <div class="mt-5">
+      <p>
+        My CV is downloadable <a
+          href="/public/CV_Attila_Dudas.md"
+          download="CV_Attila_Dudas.md">here</a
+        >.
+      </p>
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  div.default-line-height p {
+    margin-bottom: 0.25em;
+  }
+</style>

@@ -2,7 +2,17 @@
   <div
     v-for="(item, index) in notificationCollection.items"
     :key="index"
-    :class="item.classes.join(' ')"
+    :class="
+      clsx([
+        'notification',
+        'top',
+        'text-white',
+        'py-4',
+        'my-3',
+        'rounded-xl',
+        ...item.classes,
+      ])
+    "
     :style="item.styleString"
   >
     {{ item.message }}
@@ -10,7 +20,8 @@
 </template>
 
 <script lang="ts" setup>
-import { notificationCollection } from '@/components/notification/notification'
+import { notificationCollection } from "@/components/five_in_a_row/notification/notification"
+import clsx from "clsx"
 </script>
 
 <style scoped>
@@ -20,8 +31,8 @@ import { notificationCollection } from '@/components/notification/notification'
 
 .notification.mobile {
   position: absolute;
-  width: 100%;
-  left: 0;
+  width: 70%;
+  left: 15%;
 }
 
 .notification.desktop {

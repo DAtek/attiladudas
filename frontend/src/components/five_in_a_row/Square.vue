@@ -12,7 +12,7 @@ import { squareStyle } from "@/components/five_in_a_row/dynamic_style"
 import {
   notificationCollection,
   NotificationItem,
-} from "@/components/notification/notification"
+} from "@/components/five_in_a_row/notification/notification"
 import { fiveInARowState } from "./state"
 
 const EMPTY_VALUE = "A"
