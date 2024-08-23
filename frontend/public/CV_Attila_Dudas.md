@@ -25,6 +25,7 @@ confident that I know how to build maintainable, stable, performant software.
 - FastAPI
 - SQLAlchemy
 - Gorm
+- Cloudflare
 - AWS (ECS, ECR, RDS, S3, Lambda, SQS, SNS, SSM, KMS)
 - Boto3, Aioboto3
 - Redis
@@ -38,6 +39,7 @@ confident that I know how to build maintainable, stable, performant software.
 - GitLab CI
 
 ## Frontend technologies
+- Astro
 - Vue
 - React
 - Tailwind CSS
@@ -48,9 +50,9 @@ confident that I know how to build maintainable, stable, performant software.
 ## Data science technologies
 - Jupyter notebook
 - Numpy
-- OpenCV
 - Tensorflow
 - Pandas
+- OpenCV
 
 # Work experience
 ## CarCutter - 2024.04 - 2024.09

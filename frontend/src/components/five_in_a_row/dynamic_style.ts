@@ -23,7 +23,7 @@ class SquareStyle {
   setResize() {
     const width = getWidth()
 
-    this.minWidth = width > 768 ? 900 : width - 50
+    this.minWidth = width > 500 ? 500 : width + 50
 
     const ratio = this.minWidth / this.minHeight
 

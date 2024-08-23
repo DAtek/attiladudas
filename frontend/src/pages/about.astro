@@ -2,7 +2,11 @@
 import MainLayout from "../layouts/MainLayout.astro"
 ---
 
-<MainLayout class:list={["flex", "flex-grow", "justify-center", "2xl:w-1/2"]}>
+<MainLayout
+  title="About"
+  description="Short summary of Attila Dudás"
+  class:list={["flex", "flex-grow", "justify-center", "2xl:w-1/2"]}
+>
   <div>
     <h1 class="text-center">About</h1>
     <p class="text-center">Welcome to my site!</p>
@@ -13,14 +17,17 @@ import MainLayout from "../layouts/MainLayout.astro"
         >. I can say <i>engineering</i>, because I'm using various metrics and
         measurements and I'm trying to ignore most subjective aspects.
       </p>
-      <p>
-        I can only be satisfied with my work if all metrics are telling it's
-        good and if it's pleasant for my eyes (oh no, here's a subjective
-        aspect).
-      </p>
-      <p>And of course if it behaves according to to the requirements.</p>
     </div>
-    <div class="mt-5">
+    <div class="default-line-height">
+      <p>
+        When all metrics are good and the code is pleasant for my eyes (oh no,
+        here's a subjective aspect), then I know, I did a good job.
+      </p>
+      <p>
+        And of course if the software behaves according to to the requirements.
+      </p>
+    </div>
+    <div class="default-line-height">
       <p>
         My CV is downloadable <a
           href="/CV_Attila_Dudas.md"
@@ -34,5 +41,9 @@ import MainLayout from "../layouts/MainLayout.astro"
 <style>
   div.default-line-height p {
     margin-bottom: 0.25em;
+  }
+
+  div.default-line-height {
+    margin-bottom: 1em;
   }
 </style>
