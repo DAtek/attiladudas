@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content"
+import FormattedDate from "../../components/FormattedDate.astro"
+import MainLayout from "@/layouts/MainLayout.astro"
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+)
+---
+
+<MainLayout
+  title="Attila's blog"
+  description="The personal blog of Attila Dudás"
+  class:list={["flex", "flex-grow", "justify-center", "2xl:w-1/2", "mt-14"]}
+>
+  <section>
+    <ul class="list-none">
+      {
+        posts.map((post) => (
+          <li>
+            <a
+              href={`/blog/${post.slug}/`}
+              class="flex text-black hover:text-active"
+            >
+              <h4 class="hover:text-active">
+                <span>{post.data.title}</span>
+                <span class="ml-3">
+                  <FormattedDate date={post.data.pubDate} />
+                </span>
+              </h4>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</MainLayout>

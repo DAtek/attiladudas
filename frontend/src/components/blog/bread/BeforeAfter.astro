@@ -1,0 +1,16 @@
+---
+import after from "@/images/bread/after_resting.jpg"
+import before from "@/images/bread/bread_dough.jpg"
+import { Image } from "astro:assets"
+---
+
+<div class="grid grid-flow-row my-2">
+  <div class="grid grid-flow-col text-center">
+    <Image class="object-scale-down m-auto" src={before} alt="before resting" />
+    <Image class="object-scale-down m-auto" src={after} alt="after resting" />
+  </div>
+  <div class="grid grid-flow-col text-center">
+    <span>before resting</span>
+    <span>after resting</span>
+  </div>
+</div>

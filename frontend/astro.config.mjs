@@ -3,13 +3,14 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwind from "@astrojs/tailwind";
 import cloudflare from '@astrojs/cloudflare';
-
 import vue from "@astrojs/vue";
+
+import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://attiladudas.com',
-  integrations: [mdx(), sitemap(), tailwind(), vue()],
+  integrations: [mdx(), sitemap(), tailwind(), vue(), icon()],
   output: 'server',
   adapter: cloudflare()
 });
