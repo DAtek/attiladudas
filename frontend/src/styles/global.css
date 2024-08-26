@@ -26,16 +26,16 @@
     @apply text-pretty text-xl leading-7 text-black break-words bg-gradient-to-b from-slate-100 to-slate-200;
   }
   h1 {
-    @apply text-5xl my-3;
+    @apply text-5xl mt-7 mb-3;
   }
   h2 {
-    @apply text-4xl my-3;
+    @apply text-4xl mt-7 mb-3;
   }
   h3 {
-    @apply text-3xl my-3;
+    @apply text-3xl mt-7 mb-3;
   }
   h4 {
-    @apply text-2xl my-3;
+    @apply text-2xl mt-7 mb-3;
   }
   ul {
     @apply list-disc pl-5;
@@ -46,7 +46,19 @@
   hr {
     @apply border-2 text-black my-1;
   }
-  br {
-    @apply my-1;
+  table {
+    @apply border border-black;
+  }
+  th {
+    @apply border-b-4 border-black border px-2;
+  }
+  td {
+    @apply border-black border px-2;
+  }
+  td.id {
+    @apply border-r-4 font-bold;
+  }
+  th.id {
+    @apply border-r-4 font-bold;
   }
 }
