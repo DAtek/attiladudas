@@ -8,7 +8,7 @@ pubDate: "2024-08-27"
 
 This is an opinionated article. When I say something is _better_ or _is not correct_, I mean it only in my opinion, not scientifically.
 
-# The current recommended way of reading env variables in python
+## The current recommended way of reading env variables in python
 
 I'm sure you already had some business with environmental variables, especially if you're following the [_III. principle_](https://12factor.net/config) of a _12factor application_.
 
@@ -27,7 +27,7 @@ Just a couple examples:
 
 This article is offering a better, correct way of reading environmental variables.
 
-# Why using `python-dotenv` isn't correct according to the _12factor_ ?
+## Why using `python-dotenv` isn't correct according to the _12factor_ ?
 
 According to the the [_III. principle_](https://12factor.net/config),
 
@@ -60,7 +60,7 @@ As I pointed out, `load_dotenv()` line is actually reading a file! So the config
 
 The whole point of _12factor_ is that the application should not read the config from files, which means when the application starts, the config should already be found in the environment!
 
-# The correct way
+## The correct way
 
 Thankfully, there is a great tool to save us: [`direnv`](https://direnv.net/) !
 
@@ -121,7 +121,7 @@ def main():
 
 I hope you liked this post and I hope the tools I showed here will help you writing better software and improve your developer experience.
 
-# Special thanks to
+## Special thanks to
 
 - [Anthony Jackson](https://github.com/expelledboy) for showing me `direnv` back in 2021
 - [Dhia Kennouche](https://github.com/kendhia) for reviewing this post

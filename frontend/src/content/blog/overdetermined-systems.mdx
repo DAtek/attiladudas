@@ -1,0 +1,149 @@
+---
+title: "Overdetermination in software development"
+description: "Overdetermination in software development"
+pubDate: "2024-09-07"
+---
+
+import Db from "@/components/blog/overdetermined/Db.astro"
+
+Overdetermination can happen in a lot of places. Not only in mathemetics and in theory, but in real life practice too.
+Since I've studied mechatronics engineering, this topic is mostly familiar to me from mechanics, where over-constraints can cause a lot of issues.
+
+<br />
+
+I'm writing this post, becasue I stumble upon too often with code, that shows signs of over-determination, and the authors of such code for some reason don't see the problem. According to some of my friends, in computer science courses unfortunately the topic overdetermination is not being discussed, so I guess, that's the cause.
+
+## What is overdetermination?
+
+In mathematics it's called [overdetermined system](https://en.wikipedia.org/wiki/Overdetermined_system), in mechanics it's [overconstrained mechanism](https://en.wikipedia.org/wiki/Overconstrained_mechanism). In software development unfortunately I didn't find any official definition,
+but if you read the definitions, you'll see what's common in them:
+
+<br />
+
+**They contain more than necessary statements / constraints / information to fully describe a system.**
+
+<br />
+
+According to the algebratic example, if you have $N$ unknowns (variables), you should describe your system with $N$ equations. As soon as you'll have $M$ equations, where $M > N$, you'll have an _overdetermined system_, and it can happen that one or more of the equations are incorrect, so your definition for the system can be incorrect, you can have contradictions.
+
+<br />
+
+In mechanics when you have an _overconstrained mechanism_, unwanted mechanical tensions are rising, and defects will appear sooner than it was probably calculated. (If you're interested in some detailed examples, read this [post](https://www.machinedesign.com/mechanical-motion-systems/linear-motion/article/21832158/overconstraint-the-hidden-killer))
+
+## Examples from the software field
+
+The following examples are real cases I encountered with, but I obfuscated them for ethical and legal reasons.
+
+### Totals
+
+A restaurant is saving the orders into their database. But not only the orders, all items (dishes, drinks) too.  
+Despite there are 2 separate entities (orders, items), the backend service only accepts a `PUT` request to the `/orders/` endpoint.
+
+<br />
+
+The request body is the following:
+
+```json
+{
+    "order" {
+        "customer_id": "customer-1",
+        "total": "16.65",
+        "items": [
+            {
+                "name": "wheat beer",
+                "total": "3.25"
+            },
+            {
+                "name": "wiener schnitzel",
+                "total": "10.9"
+            },
+            {
+                "name": "coffee",
+                "total": "2.5"
+            }
+        ]
+    }
+}
+```
+
+<br />
+
+Let's dive into it.
+
+<br />
+The unknowns: $ t, x_1, x_2, x_3 $
+
+The equations:
+
+$$
+\begin{align}
+t &= \sum x_i \\
+t &= 16.65 \\
+x_1 &= 3.25 \\
+x_2 &= 10.9 \\
+x_3 &= 2.5 \\
+\end{align}
+$$  
+
+<br />
+
+As you can see, we have 4 unknowns and 5 equations, so this system is overdetermined!  
+It's enough to forget updating either the total or just one item down the process anywhere and you'll end up with an inconsistency.
+
+<br />
+Solution: don't send the total, calculate it when it's needed.
+
+### Database relations
+
+A file service company groups it's files into sets, and it also needs to export these files to various customers.  
+When an export happens, a new `export_job` record and multiple `export_file` records are being created in the database. The DB structure is the following:
+
+<Db />
+
+The database can defined as follwing:
+
+$$
+\begin{align}
+&R(A1, A2, B1, B2, C1, C2, D1, D2, D3) \\
+&A1 := file\_set.id \\
+&A2 := file\_set.name \\ 
+&B1 := file.id \\
+&B2 := file.filename \\ 
+&C1 := export\_job.id \\
+&C2 := export\_job.created_at \\ 
+&D1 := export\_file.id \\
+&D2 := export\_file.destination \\ 
+&D3 := export\_file.created_at \\ 
+\\
+&R1 := file\_set \\
+&R2 := file \\
+&R3 := export\_job \\ 
+&R4 := export\_file \\
+\\
+&R1\ \{A1\} -> \{A2\} \\ 
+&R2\ \{B1\} -> \{A1, B2\} \\
+&R3\ \{C1\} -> \{A1, C2\} \\
+&R4\ \{D1\} -> \{B1, C1, D2, D3\} \\
+\end{align}
+$$
+
+
+<br />
+
+So, the `export_file` -> `file_set` relation is defined via
+$$
+\begin{align}
+&D1 -> B1 -> A1 \\
+&D1 -> C1 -> A1 \\
+\end{align}
+$$
+
+<br/>
+
+And here is the problem, a `file_set` can only relate to a single `export_file`, which means there should be only 1 relation!
+Nothing guarantees that both relations will link the `export_file` to the same `file_set`.  
+To prevent inconsistency you have to implement a lot of extra logic in the code, which can be and should be avoided.
+
+<br/>
+
+Solution: delete the `export_job.file_set_id` column.
