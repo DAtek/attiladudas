@@ -5,18 +5,21 @@ pubDate: "2024-09-07"
 ---
 
 import Db from "@/components/blog/overdetermined/Db.astro"
+import InlineMath from "@/components/InlineMath.astro"
 
 Overdetermination can happen in a lot of places. Not only in mathemetics and in theory, but in real life practice too.
 Since I've studied mechatronics engineering, this topic is mostly familiar to me from mechanics, where over-constraints can cause a lot of issues.
 
 <br />
 
-I'm writing this post, becasue I stumble upon too often with code, that shows signs of over-determination, and the authors of such code for some reason don't see the problem. According to some of my friends, in computer science courses unfortunately the topic overdetermination is not being discussed, so I guess, that's the cause.
+I'm writing this post, becasue I stumble upon too often with code, that shows signs of over-determination,
+and the authors of such code for some reason don't see the problem. According to some of my friends, in computer science courses unfortunately the topic overdetermination is not being discussed, so I guess, that's the cause.
 
 ## What is overdetermination?
 
-In mathematics it's called [overdetermined system](https://en.wikipedia.org/wiki/Overdetermined_system), in mechanics it's [overconstrained mechanism](https://en.wikipedia.org/wiki/Overconstrained_mechanism). In software development unfortunately I didn't find any official definition,
-but if you read the definitions, you'll see what's common in them:
+In mathematics it's called [overdetermined system](https://en.wikipedia.org/wiki/Overdetermined_system),
+in mechanics it's [overconstrained mechanism](https://en.wikipedia.org/wiki/Overconstrained_mechanism).
+In software development unfortunately I didn't find any official definition, but if you read the definitions, you'll see what's common in them:
 
 <br />
 
@@ -24,11 +27,17 @@ but if you read the definitions, you'll see what's common in them:
 
 <br />
 
-According to the algebratic example, if you have $N$ unknowns (variables), you should describe your system with $N$ equations. As soon as you'll have $M$ equations, where $M > N$, you'll have an _overdetermined system_, and it can happen that one or more of the equations are incorrect, so your definition for the system can be incorrect, you can have contradictions.
+According to the algebratic example, if you have <InlineMath>$N$</InlineMath> unknowns (variables),
+you should describe your system with <InlineMath>$N$</InlineMath> equations.
+As soon as you'll have <InlineMath>$M$</InlineMath> equations, where <InlineMath>$M > N$</InlineMath>,
+you'll have an _overdetermined system_, and it can happen that one or more of the equations are incorrect,
+so your definition for the system can be incorrect, you can have contradictions.
 
 <br />
 
-In mechanics when you have an _overconstrained mechanism_, unwanted mechanical tensions are rising, and defects will appear sooner than it was probably calculated. (If you're interested in some detailed examples, read this [post](https://www.machinedesign.com/mechanical-motion-systems/linear-motion/article/21832158/overconstraint-the-hidden-killer))
+In mechanics when you have an _overconstrained mechanism_, unwanted mechanical tensions are rising,
+and defects will appear sooner than it was probably calculated. (If you're interested in some detailed examples,
+read this [post](https://www.machinedesign.com/mechanical-motion-systems/linear-motion/article/21832158/overconstraint-the-hidden-killer))
 
 ## Examples from the software field
 
@@ -71,7 +80,7 @@ The request body is the following:
 Let's dive into it.
 
 <br />
-The unknowns: $ t, x_1, x_2, x_3 $
+The unknowns: <InlineMath>$ t,\ x_1,\ x_2,\ x_3 $</InlineMath>
 
 The equations:
 
@@ -104,7 +113,7 @@ The database can defined as follwing:
 
 $$
 \begin{align}
-&R(A1, A2, B1, B2, C1, C2, D1, D2, D3) \\
+&R(A1,\ A2,\ B1,\ B2,\ C1,\ C2,\ D1,\ D2,\ D3) \\
 &A1 := file\_set.id \\
 &A2 := file\_set.name \\ 
 &B1 := file.id \\
@@ -120,10 +129,10 @@ $$
 &R3 := export\_job \\ 
 &R4 := export\_file \\
 \\
-&R1\ \{A1\} -> \{A2\} \\ 
-&R2\ \{B1\} -> \{A1, B2\} \\
-&R3\ \{C1\} -> \{A1, C2\} \\
-&R4\ \{D1\} -> \{B1, C1, D2, D3\} \\
+&R1\ \{A1\}\ -> \{A2\} \\ 
+&R2\ \{B1\}\ -> \{A1,\ B2\} \\
+&R3\ \{C1\}\ -> \{A1,\ C2\} \\
+&R4\ \{D1\}\ -> \{B1,\ C1,\ D2,\ D3\} \\
 \end{align}
 $$
 
@@ -133,8 +142,8 @@ $$
 So, the `export_file` -> `file_set` relation is defined via
 $$
 \begin{align}
-&D1 -> B1 -> A1 \\
-&D1 -> C1 -> A1 \\
+&D1\ ->\ B1\ ->\ A1 \\
+&D1\ ->\ C1\ ->\ A1 \\
 \end{align}
 $$
 

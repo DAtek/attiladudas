@@ -5,9 +5,9 @@ import tailwind from "@astrojs/tailwind"
 import vue from "@astrojs/vue"
 import icon from "astro-icon"
 import { defineConfig } from "astro/config"
-import rehypeKatex from "rehype-katex"
+import rehypeMathjax from "rehype-mathjax"
 import remarkMath from "remark-math"
-rehypeKatex
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://attiladudas.com",
@@ -16,13 +16,6 @@ export default defineConfig({
   adapter: cloudflare(),
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [
-      [
-        rehypeKatex,
-        {
-          output: "mathml",
-        }
-      ]
-    ],
+    rehypePlugins: [rehypeMathjax],
   },
 })

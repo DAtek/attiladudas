@@ -61,7 +61,10 @@
   th.id {
     @apply border-r-4 font-bold;
   }
-  math {
-    @apply text-left text-xl;
+  span.inline-math mjx-container svg {
+    @apply inline;
+  }
+  mjx-container svg {
+    @apply max-h-[100%] max-w-[100%] object-scale-down;
   }
 }
