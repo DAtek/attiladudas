@@ -9,11 +9,12 @@
 - `go`
 - `gotestsum`
 - `node`
+- `awscli`
 - For the backend deployment: `ansible`
 
 ## Running the tests locally:
 - `cd backend`
-- `just test`git checko
+- `just test`
 
 ## Running both the frontend and backend locally
 - `docker compose up --build`
