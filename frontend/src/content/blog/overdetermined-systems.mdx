@@ -2,6 +2,7 @@
 title: "Overdetermination in software development"
 description: "Overdetermination in software development"
 pubDate: "2024-09-07"
+updatedDate: "2024-09-09"
 ---
 
 import Db from "@/components/blog/overdetermined/Db.astro"
@@ -119,10 +120,10 @@ $$
 &B1 := file.id \\
 &B2 := file.filename \\ 
 &C1 := export\_job.id \\
-&C2 := export\_job.created_at \\ 
+&C2 := export\_job.created\_at \\ 
 &D1 := export\_file.id \\
 &D2 := export\_file.destination \\ 
-&D3 := export\_file.created_at \\ 
+&D3 := export\_file.created\_at \\ 
 \\
 &R1 := file\_set \\
 &R2 := file \\
@@ -156,3 +157,12 @@ To prevent inconsistency you have to implement a lot of extra logic in the code,
 <br/>
 
 Solution: delete the `export_job.file_set_id` column.
+
+## How to avoid overdetermination
+
+If you want to avoid creating overdetermined systems, always seek to simplicity
+and include **only the necessary information** in the definitions.  [Keep it simple, stupid!](https://en.wikipedia.org/wiki/KISS_principle)
+
+<br/>
+
+Always ask yoursef - Do I really need that additional field / constraint / variable, or is the information provided by that field / ... already available for me?  
