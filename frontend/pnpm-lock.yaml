@@ -63,6 +63,9 @@ importers:
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
+      wrangler:
+        specifier: ^3.75.0
+        version: 3.75.0(@cloudflare/workers-types@4.20240903.0)
 
 packages:
 
