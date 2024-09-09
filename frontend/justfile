@@ -1,0 +1,34 @@
+deploy-frontend: build-frontend
+    #!/bin/bash
+    set -eou pipefail
+
+    pnpx wrangler pages deploy --project-name "${CLOUDFLARE_PROJECT_NAME}" dist
+
+build-frontend:
+    #!/bin/bash
+    set -eou pipefail
+
+    pnpm build
+
+download-images-from-s3:
+    aws s3 cp --recursive s3://attiladudas-frontend/images src/images
+
+upload-images-to-s3:
+    aws s3 cp --recursive src/images s3://attiladudas-frontend/images
+
+get-project-name branch:
+    #!/bin/bash
+    set -eou pipefail
+
+    case "{{ branch }}" in
+        dev)
+        echo "attiladudas-dev"
+        exit 0
+        ;;
+        main)
+        echo "attiladudas-prod"
+        exit 0
+        ;;
+    esac
+
+    exit 1
