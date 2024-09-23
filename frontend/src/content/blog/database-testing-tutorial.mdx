@@ -1,0 +1,306 @@
+---
+title: "Database testing tutorial"
+description: "A brief guide for using transactional test cases in Golang"
+pubDate: "2024-09-23"
+---
+
+import TestingPyramid from "@/components/blog/db_testing/TestingPyramid.astro"
+
+Testing interactions with the database isn't the easiest. Doing it properly can be even challenging.  
+This post presents a practice which helps testing the database efficiently.
+
+## Types of tests
+
+Based on how much code is being tested in a test case, the following test categories can be defined:
+
+- Unit tests
+- Integration tests
+- End to end tests (E2E)
+
+<br />
+
+**Unit tests** are testing a single unit of code, separated from all external resources. These are the **simplest, fastest, cheapest** tests.
+
+<br />
+
+**Integration tests** are testing that a unit of code can be integrated with another unit of code or with an external resource.
+These tests are **more complicated, slower, more expensive**.
+
+<br />
+
+**E2E tests** are testing that a system behaves correctly. These are the **most complicated, slowest, most expensive** tests.
+
+<TestingPyramid />
+
+## Why unit tests aren't suitable for the purpose
+
+You may think, OK, if unit tests are the fastest simplest, and cheapest, why don't we write only unit tests?
+
+<br />
+
+The answer is: there are things which can't be tested with unit tests, and database interactions fall into this category.
+
+<br />
+
+If you wrote unit tests for the code interacting with your database, you would have to mock out the actual interactions,
+so the tests would lose their original purpose.
+
+<br />
+
+Altough if you asked the above question, you were right, one should write unit tests as long as possible.
+If something can't be tested with a unit test, try testing it with an integration test. If it can't be tested with integration test, then write an E2E test
+\- this explains the shape of the testing pyramid.  
+Keep you test suite [simple](https://en.wikipedia.org/wiki/KISS_principle), just like everything else.
+
+## Testing with integrations tests
+
+The following demonstration is written in [`Go`](https://go.dev/), but the same setup can be achieved with probably all languages.
+
+<br />
+In this case I'm using the [gorm](https://gorm.io/) library, because I don't
+like to deal with low-level database libraries. Let these higher level libraries
+do the connection-pooling and constructing the `SQL` statements. If you don't
+trust the authors, you can implement these functionalities and re-invent the
+wheel.
+
+<br />
+
+Let's consider having a very simple module responsible for creating and deleting users:
+
+```go
+package db_test
+
+import (
+	"db_test/db"
+	"errors"
+
+	"gorm.io/gorm"
+)
+
+func CreateUser(conn *gorm.DB, name string) (db.User, error) {
+	user := db.User{Name: name}
+	res := conn.Create(&user)
+	return user, res.Error
+}
+
+func DeleteUser(conn *gorm.DB, id int) error {
+	res := conn.Where("id = ?", id).Delete(&db.User{})
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("USER_NOT_EXISTS")
+	}
+
+	return nil
+}
+```
+
+Both functions are receiving the `conn` argument, which is the database _connection_, and as you will see this is essential from the testing perspective.
+Maybe a later post will cover the importance of [DI](https://en.wikipedia.org/wiki/Dependency_injection).
+
+<br />
+
+Since `gorm` doesn't have different types for connections and transactions, the `conn` parameter could be either.
+Let's gather the pros and cons using a connection or a transaction in the functions.
+
+<table>
+  <tr>
+    <th></th>
+    <th>Pros</th>
+    <th>Cons</th>
+  </tr>
+  <tr>
+    <td>
+      <strong>Connection</strong>
+    </td>
+    <td>
+      <ul>
+        <li>
+          We can be sure the data is being saved into the db (commit can happen within the function)
+        </li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Tests can affect eachother</li>
+        <li>Tests can't run in parallel</li>
+        <li>Tests are slower compared to the transactional tests</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <strong>Transaction</strong>
+    </td>
+    <td>
+      <ul>
+        <li>The commit can be executed in a single, centralised function</li>
+        <li>Tests can't affect eachother (transactional isolation)</li>
+        <li>
+          Rolling back at the end of each test is faster than commiting and
+          deleting
+        </li>
+        <li>Tests can run in parallel</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>
+          We can't be sure the data is being saved into the db, additional test
+          is needed
+        </li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+Now it's clearly visible: we should pass transactions to our functions and not the connection itself.  
+Let's have a look at the tests:
+
+```go
+package db_test
+
+import (
+	"db_test/db"
+	"testing"
+
+	"github.com/DAtek/gotils"
+	"github.com/stretchr/testify/assert"
+
+	"gorm.io/gorm"
+)
+
+func TestCreateUser(t *testing.T) {
+	t.Run(
+		"Creates user",
+		db.TestWithTransaction(func(t *testing.T, tx *gorm.DB) {
+			// given
+			name := "Asimov"
+
+			// when
+			user := gotils.ResultOrPanic(CreateUser(tx, name))
+
+			// then
+			assert.Equal(t, name, user.Name)
+			savedUser := db.User{}
+			tx.Find(&savedUser).Where("id = ?", user.Id)
+			assert.Equal(t, name, savedUser.Name)
+		}))
+
+	t.Run(
+		"Returns error if user with the same name already exists",
+		db.TestWithTransaction(func(t *testing.T, tx *gorm.DB) {
+			// given
+			name := "Asimov"
+			CreateUser(tx, name)
+
+			// when
+			_, err := CreateUser(tx, name)
+
+			// then
+			assert.Error(t, err)
+		}))
+}
+
+func TestDeleteUser(t *testing.T) {
+	t.Run(
+		"Deletes user",
+		db.TestWithTransaction(func(t *testing.T, tx *gorm.DB) {
+			// given
+			user := db.User{Name: "Isaac"}
+			res := tx.Create(&user)
+			if res.Error != nil {
+				panic(res.Error)
+			}
+
+			// when
+			err := DeleteUser(tx, user.Id)
+
+			// then
+			assert.Nil(t, err)
+			count := int64(0)
+			tx.Find(&db.User{}).Where("id = ?", user.Id).Count(&count)
+			assert.Equal(t, int64(0), count)
+		}))
+
+	t.Run(
+		"Returns error if user not exists",
+		db.TestWithTransaction(func(t *testing.T, tx *gorm.DB) {
+			// when
+			err := DeleteUser(tx, 1)
+
+			// then
+			assert.Error(t, err)
+		}))
+
+	t.Run(
+		"Returns error if unexpected event happens",
+		db.TestWithTransaction(func(t *testing.T, tx *gorm.DB) {
+			// given
+			user := db.User{Name: "Isaac"}
+			res := tx.Create(&user)
+			if res.Error != nil {
+				panic(res.Error)
+			}
+
+			tx.Rollback()
+
+			// when
+			err := DeleteUser(tx, user.Id)
+
+			// then
+			assert.Error(t, err)
+		}))
+}
+```
+
+<br />
+
+And the `test_helpers.go`:
+
+```go
+package db
+
+import (
+	"testing"
+
+	"github.com/DAtek/gotils"
+	"gorm.io/gorm"
+)
+
+var testConn *gorm.DB
+
+func GetTestConn() *gorm.DB {
+	if testConn == nil {
+		testConn = gotils.ResultOrPanic(NewConnFromEnv())
+	}
+
+	return testConn
+}
+
+func GetTestTransaction() *gorm.DB {
+	return GetTestConn().Begin()
+}
+
+func TestWithTransaction(
+	transactionalTest func(t *testing.T, tx *gorm.DB),
+) func(t *testing.T) {
+	tx := GetTestTransaction()
+
+	return func(t *testing.T) {
+		defer tx.Rollback()
+		transactionalTest(t, tx)
+	}
+}
+```
+
+With this approach each test owns a transaction and the test suite can stay blazingly fast.
+
+<br/>
+
+The full source code can be found in the project's [repository](https://github.com/DAtek/attiladudas), in the `/code_examples/db_testing` folder.

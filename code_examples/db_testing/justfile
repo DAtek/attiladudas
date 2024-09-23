@@ -1,0 +1,54 @@
+coverfile := ".coverage"
+
+integration-test:
+    #!/bin/bash
+    set -eou pipefail
+    set -o allexport
+
+    source .env.example
+    just run-backing-services -d --wait
+    just migrate up
+
+    status=0
+    just test || status=$?
+
+    [ ${status} != 0 ] && docker compose logs
+
+    docker compose down
+    exit $status
+
+acceptance-test:
+    #!/bin/bash
+    set -eou pipefail
+    set -o allexport
+
+    source .env.example
+    just run-backing-services -d --wait
+    just migrate up
+
+    status=0
+    new_id=$(just create-user Daneel) || status=$?
+    just delete-user "${new_id}" || status=$?
+
+    [ ${status} != 0 ] && docker compose logs
+
+    docker compose down
+    exit $status
+
+migrate *arg:
+    go run ./cmd/migrate {{ arg }}
+
+test *args:
+    go test . -coverprofile {{ coverfile }} {{ args }}
+
+show-coverage:
+    go tool cover -html {{ coverfile }}
+
+run-backing-services *args:
+    docker compose up {{ args }}
+
+create-user name:
+    go run ./cmd/create-user {{ name }}
+
+delete-user id:
+    go run ./cmd/delete-user {{ id }}
