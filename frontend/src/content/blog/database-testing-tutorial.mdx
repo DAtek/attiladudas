@@ -2,6 +2,7 @@
 title: "Database testing tutorial"
 description: "A brief guide for using transactional test cases in Golang"
 pubDate: "2024-09-23"
+updatedDate: "2024-11-15"
 ---
 
 import TestingPyramid from "@/components/blog/db_testing/TestingPyramid.astro"
@@ -267,21 +268,16 @@ And the `test_helpers.go`:
 package db
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/DAtek/gotils"
 	"gorm.io/gorm"
 )
 
-var testConn *gorm.DB
-
-func GetTestConn() *gorm.DB {
-	if testConn == nil {
-		testConn = gotils.ResultOrPanic(NewConnFromEnv())
-	}
-
-	return testConn
-}
+var GetTestConn = sync.OnceValue(func() *gorm.DB {
+	return gotils.ResultOrPanic(NewConnFromEnv())
+})
 
 func GetTestTransaction() *gorm.DB {
 	return GetTestConn().Begin()
@@ -290,13 +286,14 @@ func GetTestTransaction() *gorm.DB {
 func TestWithTransaction(
 	transactionalTest func(t *testing.T, tx *gorm.DB),
 ) func(t *testing.T) {
-	tx := GetTestTransaction()
-
 	return func(t *testing.T) {
-		defer tx.Rollback()
+		tx := GetTestTransaction()
+		t.Cleanup(func() { tx.Rollback() })
 		transactionalTest(t, tx)
 	}
 }
+
+
 ```
 
 With this approach each test owns a transaction and the test suite can stay blazingly fast.
