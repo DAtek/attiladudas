@@ -2,13 +2,37 @@
 import HeaderLink from "./HeaderLink.astro"
 ---
 
-<header>
-  <nav>
-    <div class="grid-flow-col text-center mt-2">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/about/">About</HeaderLink>
-      <HeaderLink href="/blog/">Blog</HeaderLink>
-      <HeaderLink href="/five-in-a-row/">Five in a row</HeaderLink>
-    </div>
+<header class="mx-auto">
+  <nav class="mt-2 py-4">
+    <HeaderLink href="/">Home</HeaderLink>
+    <HeaderLink href="/about/">About</HeaderLink>
+    <HeaderLink href="/blog/">Blog</HeaderLink>
+    <span id="apps_dropdown_span" class="group cursor-pointer mx-2">
+      <span>Apps</span>
+      <div
+        id="apps_dropdown_menu"
+        class="hidden absolute ml-48 sm:ml-52 z-50 bg-slate-200 px-1 shadow-xl"
+      >
+        <HeaderLink href="/apps/five-in-a-row/" class="block w-36 pt-2">
+          Five in a Row
+        </HeaderLink>
+        <HeaderLink href="/apps/sugar-adjuster/" class="block w-36 pt-2">
+          Sugar adjuster
+        </HeaderLink>
+      </div>
+    </span>
+    <script>
+      ;(() => {
+        const menuSpan = document.getElementById("apps_dropdown_span")
+        const menu = document.getElementById("apps_dropdown_menu")
+        if (!menuSpan) {
+          throw "#apps_dropdown_menu not found"
+        }
+
+        menuSpan.onclick = () => {
+          menu?.classList.toggle("hidden")
+        }
+      })()
+    </script>
   </nav>
 </header>
