@@ -11,7 +11,7 @@ import remarkMath from "remark-math"
 // https://astro.build/config
 export default defineConfig({
   site: "https://attiladudas.com",
-  integrations: [mdx(), sitemap(), tailwind(), vue(), icon()],
+  integrations: [mdx(), sitemap(), tailwind(), vue({appEntrypoint: "src/vue"}), icon()],
   output: "server",
   adapter: cloudflare(),
   markdown: {

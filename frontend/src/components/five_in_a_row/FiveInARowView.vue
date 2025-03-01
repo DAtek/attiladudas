@@ -1,7 +1,9 @@
 <template>
-  <h1>Five in a row</h1>
-  <JoinRoom v-if="!fiveInARowState.room && !fiveInARowState.player" />
-  <GameBoard v-else />
+  <div class="flex flex-col text-center">
+    <h1>Five in a row</h1>
+    <JoinRoom v-if="!fiveInARowState.room && !fiveInARowState.player" />
+    <GameBoard v-else />
+  </div>
 </template>
 
 <script lang="ts" setup>

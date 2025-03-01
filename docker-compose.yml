@@ -1,13 +1,13 @@
 services:
   backend:
-    image: attiladudas/backend:latest
+    image: attiladudas/backend
     build: ./backend
     command: ["./run-server", "-host", "0.0.0.0", "-port", "80"]
     ports:
       - "127.0.0.1:${BACKEND_PORT-8080}:80"
 
   frontend:
-    image: frontend
+    image: attiladudas/frontend
     build: ./frontend
     working_dir: /frontend
     command: >

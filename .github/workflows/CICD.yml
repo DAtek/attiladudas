@@ -31,7 +31,7 @@ jobs:
 
     - uses: actions/setup-go@v4
       with:
-        go-version: '>=1.22.0'
+        go-version: '>=1.24.0'
 
     - name: Test backend
       shell: bash
@@ -43,6 +43,14 @@ jobs:
     - uses: pnpm/action-setup@v4
       with:
         version: 9
+
+    - name: Test frontend
+      shell: bash
+      working-directory: ./frontend
+      run: |
+        pnpm install
+        pnpm check
+        pnpm test
 
     - uses: Sumanshu-Nankana/setup-aws-cli@v1
       with:
@@ -59,7 +67,6 @@ jobs:
         PUBLIC_DATEK_WS_URL: ${{ vars.PUBLIC_DATEK_WS_URL }}
       working-directory: ./frontend
       run: |
-        pnpm install
         just download-images-from-s3
         just deploy-frontend
 

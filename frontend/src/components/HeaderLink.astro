@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types"
 
 type Props = HTMLAttributes<"a">
 
-const { href, ...props } = Astro.props
+const { href, class: className, ...props } = Astro.props
 
 const { pathname } = Astro.url
 const subpath = pathname.match(/[^\/]+/g)
@@ -19,6 +19,7 @@ const isActive = href === pathname || href === "/" + subpath?.[0]
     "text-black",
     "border-b-2",
     "border-transparent",
+    className,
   ]}
   {...props}
 >

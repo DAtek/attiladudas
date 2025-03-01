@@ -1,0 +1,12 @@
+---
+import SugarAdjusterView from "@/components/sugar_adjuster/SugarAdjusterView.vue"
+import MainLayout from "@/layouts/MainLayout.astro"
+---
+
+<MainLayout
+  title="Sugar adjuster"
+  description="Adjust the sugar in desserts"
+  class:list={["flex", "flex-grow", "justify-center", "lg:mt-14"]}
+>
+  <SugarAdjusterView client:load />
+</MainLayout>

@@ -1,4 +1,4 @@
-FROM golang:1.22 AS deps
+FROM golang:1.24 AS deps
 WORKDIR /project
 COPY api/go.mod api/go.sum api/
 COPY fiber-tools/go.mod fiber-tools/go.sum fiber-tools/
